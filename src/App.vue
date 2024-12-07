@@ -7,6 +7,11 @@
 
 
   {{ x }}- {{ y }}
+
+  <!--
+  <DefaultLayout>
+    <RouterView></RouterView>
+  </DefaultLayout> -->
 </template>
 
 <script lang="ts" setup>
@@ -16,6 +21,7 @@
 import { useRoute } from 'vue-router';
 import { useMouse } from './composables/useMouse';
 import { onMounted, ref, defineAsyncComponent } from 'vue';
+import DefaultLayout from './layouts/DefaultLayout.vue';
 
 
 
@@ -28,7 +34,6 @@ const layoutComponent2 = ref<any>(null);
 onMounted(async () => {
   layoutComponent2.value = defineAsyncComponent(() => import(`./layouts/${route.meta.layout}.vue`))
   const layoutName: string = (route.meta as { layout?: string }).layout || 'DefaultLayout';
-  alert(layoutName)
   try {
     const layoutComponent = defineAsyncComponent(() => import(`./layouts/${layoutName}.vue`))
     layout.value = layoutComponent; // Asigna el componente cargado

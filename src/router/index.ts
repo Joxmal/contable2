@@ -13,7 +13,7 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       meta: {
-        layout: 'MainLayout',
+        layout: 'DefaultLayout',
       },
     },
     {
@@ -39,9 +39,6 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: NotFoundView,
-      meta: {
-        layout: 'MainLayout',
-      },
     },
   ],
 })
