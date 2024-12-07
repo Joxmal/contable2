@@ -45,13 +45,17 @@
 </template>
 
 <script setup lang="ts">
+import { useLayoutStore } from "@/stores/layout";
 import FormAdminNav from '@/components/form/FormAdminNav.vue'
 //import { useTheme } from "vuetify";
 //import { usePersistedStore } from "@/stores/persisted";
 import { useSessionStore } from "@/stores/session";
 //import { storeToRefs } from "pinia";
-import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useRouter } from "vue-router";
 
+const sessionStore = useSessionStore();
+const router = useRouter();
 
 const profileMenu = [
   { title: "Perfil", shortcut: "⇧⌘P" },
@@ -60,12 +64,13 @@ const profileMenu = [
   {
     title: "Cerrar sesión",
     shortcut: "⇧⌘Q",
-    action: useSessionStore().cerrarSesión,
+    action: () => sessionStore.cerrarSesion(router),
   },
 ];
 
 // Global drawer state
-const drawer = ref<boolean | undefined | null>(undefined);
+const { drawer } = storeToRefs(useLayoutStore())
+
 
 
 //const { authSession } = storeToRefs(usePersistedStore())

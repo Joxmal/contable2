@@ -1,19 +1,15 @@
+// src/stores/sessionStore.js
 import { defineStore } from 'pinia'
 import { usePersistedStore } from './persisted'
-import { useRouter } from 'vue-router'
+import type { Router } from 'vue-router'
 
 export const useSessionStore = defineStore('session', () => {
-  function cerrarSesión() {
-    usePersistedStore().authSession = {
-      token: '',
-      user: {
-        id: 1,
-        name: '',
-        role: 'user',
-      },
+  function cerrarSesion(router: Router) {
+    usePersistedStore().authSession = null
+    if (router) {
+      return router.push('/') // Usa el router pasado como argumento
     }
-    return useRouter().push('/')
   }
 
-  return { cerrarSesión }
+  return { cerrarSesion }
 })

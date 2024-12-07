@@ -1,12 +1,11 @@
 <!-- src/App.vue -->
 <template>
-  {{ route.meta.layoutComponent }}
   <component :is="route.meta.layoutComponent">
     <router-view />
+    {{ x }}- {{ y }}
   </component>
 
 
-  {{ x }}- {{ y }}
 
   <!--
   <DefaultLayout>
@@ -21,9 +20,6 @@
 import { useRoute } from 'vue-router';
 import { useMouse } from './composables/useMouse';
 import { onMounted, ref, defineAsyncComponent } from 'vue';
-import DefaultLayout from './layouts/DefaultLayout.vue';
-
-
 
 const { x, y } = useMouse()
 const route = useRoute();

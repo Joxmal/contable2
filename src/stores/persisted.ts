@@ -4,22 +4,16 @@ export interface AuthSession {
   user: User
 }
 
-interface User {
-  id: number
-  name: string
-  role: 'user' | 'admin' | 'superAdmin' | 'root'
+export interface User {
+  firstName: string
+  lastName: string
+  rolePrimary: string
+  roleCompany: string
 }
 
 export const usePersistedStore = defineStore('persisted', {
   state: () => ({
-    authSession: {
-      token: '',
-      user: {
-        id: 1,
-        name: 'joxmal',
-        role: 'user',
-      },
-    } as AuthSession,
+    authSession: {} as AuthSession | null,
   }),
   persist: {
     storage: localStorage,

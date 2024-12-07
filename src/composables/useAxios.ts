@@ -16,6 +16,7 @@ export default function useAxios<T>() {
       response.value = res.data
     } catch (err) {
       error.value = err as Error
+      throw err
     } finally {
       loading.value = false
     }
