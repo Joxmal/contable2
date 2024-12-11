@@ -1,13 +1,14 @@
 <template>
 
-  <v-card title="Cuentas" flat>
+  <v-card title="Cuentas" border>
     <template v-slot:text>
-      <v-text-field v-model="search" label="Buscar" prepend-inner-icon="mdi-magnify" variant="outlined" hide-details
-        single-line>
+      <v-text-field placeholder="Buscador" v-model="search" label="Buscar" prepend-inner-icon="mdi-magnify"
+        variant="outlined" hide-details single-line>
       </v-text-field>
     </template>
 
-    <v-data-table :group-by="groupBy" :headers="headers" :items="items" multi-sort density="compact" :search="search">
+    <v-data-table :items="items" items-per-page="100" :group-by="groupBy" :headers="headers" multi-sort
+      density="compact" :search="search">
       <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
         <tr>
           <td :colspan="columns.length">

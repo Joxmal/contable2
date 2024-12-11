@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import AxiosService from '@/services/userServices'
 import { toast } from 'vue3-toastify'
@@ -16,6 +16,8 @@ interface cuentasTipo {
   nombre: string
   codigo: number
   description: string
+  createdAt: Date
+  updatedAt: Date
 }
 interface DataCuentasContables {
   cuentasTipo: cuentasTipo[]
@@ -36,6 +38,32 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
     cuentaContables: [],
   })
 
+  //computed
+
+  const combinedList = computed(() => {
+    const litaTiposCuentas = dataCuentasContables.value.cuentasTipo
+    const litaCuentas = dataCuentasContables.value.cuentaContables
+
+    console.log('litaCuentas', litaCuentas)
+    const litaCuentaTiposMap = litaTiposCuentas.map((values) => {
+      return {
+        value: values.codigo,
+        tipo: values.nombre,
+      }
+    })
+
+    const listaCuentasMap = litaCuentas.map((values) => {
+      return {
+        value: values.codigo,
+        tipo: values.nombre,
+      }
+    })
+    const combinedList = litaCuentaTiposMap.concat(listaCuentasMap)
+    console.log(combinedList)
+    return combinedList
+  })
+  ////-------------------
+
   function asignarFormulario({
     cuentaPadreCod,
     cod,
@@ -54,11 +82,12 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
     value.description = description
   }
 
-  //-----
-
+  //-----obtener tipos principales de las cuentas contables
   async function fetchDataCuentasTipo() {
-    const { data, error } = await AxiosService.get('/cuentas-contables/tipos')
+    const { data, error } = await AxiosService.get<cuentasTipo[]>('/cuentas-contables/tipos')
 
+    console.log(data)
+    dataCuentasContables.value.cuentasTipo = data
     if (error) {
       toast.error('error')
     } else {
@@ -66,8 +95,9 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
     }
   }
 
+  //-----obtener las cuentas contables hijas de los tipos principales
   async function fetchDataCuentas() {
-    const { data, error } = await AxiosService.get('/cuentas-contables')
+    const { data, error } = await AxiosService.get<CuentaContables[]>('/cuentas-contables')
     console.log('data', data)
     if (error) {
       toast.error('error')
@@ -76,6 +106,7 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
     }
   }
 
+  //-----crear las cuentas contables hijas de los tipos principales
   async function PostDataCuentas() {
     const body = { ...formCreateCuentasContables.value }
     const { data, error } = await AxiosService.post('/cuentas-contables', body)
@@ -94,12 +125,42 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
     }
   }
 
+  //-----editar las cuentas contables hijas de los tipos principales
+  async function patchDataCuentas(id: number) {
+    const body = { ...formCreateCuentasContables.value }
+    const { error } = await AxiosService.patch(`/cuentas-contables/${id}`, body)
+
+    if (error) {
+      toast.error('error')
+    } else {
+      reload.value++
+      toast.success('Editado correctamente')
+    }
+  }
+
+  //-----eliminar tipo de cuenta contable
+  async function deleteDataCuentas(id: number) {
+    const confirma = confirm('¿Quiere eliminar Esta Cuenta Contable?')
+    if (!confirma) return
+
+    const { error } = await AxiosService.delete<CuentaContables[]>(`/cuentas-contables/${id}`)
+
+    if (error) {
+      toast.error('error')
+    } else {
+      reload.value++
+    }
+  }
+
   return {
     fetchDataCuentasTipo,
+    deleteDataCuentas,
     PostDataCuentas,
+    patchDataCuentas,
     dataCuentasContables,
     asignarFormulario,
     reload,
     fetchDataCuentas,
+    combinedList,
   }
 })

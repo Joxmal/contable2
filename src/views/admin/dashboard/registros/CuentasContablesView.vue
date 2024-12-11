@@ -1,15 +1,19 @@
 <template>
-  <DialogGeneral @close="update = false" ref="dialog" :props_title-dialog="update ? 'Editar Cuenta' : 'Crear Cuenta'"
-    props_open-btn="CREAR CUENTA">
-    <template #contenido>
-      <CreateUpdateCuentasContables :update="update" :updateId="updateId" ref="dialogContenido" />
-    </template>
-  </DialogGeneral>
+  <v-row class="pb-2">
+    <v-col>
+      <DialogGeneral @close="update = false" ref="dialog"
+        :props_title-dialog="update ? 'Editar Cuenta' : 'Crear Cuenta'" props_open-btn="CREAR CUENTA">
+        <template #contenido>
+          <CreateUpdateCuentasContables :update="update" :updateId="updateId" ref="dialogContenido" />
+        </template>
+      </DialogGeneral>
+    </v-col>
+  </v-row>
 
 
   <!-- tabla de cuentas contables -->
   <TableDataCuentaContable :items="storeCuentasContables.dataCuentasContables.cuentaContables"
-    @eliminar="console.log($event)" @editar="updateForm" />
+    @eliminar="storeCuentasContables.deleteDataCuentas($event as number)" @editar="updateForm" />
 </template>
 <script setup lang="ts">
 import TableDataCuentaContable from '@/components/TableData/TableDataCuentaContable.vue'
@@ -28,10 +32,14 @@ const { reload } = storeToRefs(storeCuentasContables)
 ///-----------------------
 onMounted(() => {
   storeCuentasContables.fetchDataCuentas()
+  storeCuentasContables.fetchDataCuentasTipo()
 })
+
+
 
 watch(reload, () => {
   storeCuentasContables.fetchDataCuentas()
+  storeCuentasContables.fetchDataCuentasTipo()
 })
 
 //EDITAR

@@ -1,6 +1,6 @@
 <template>
-  <div class="text-center pa-4">
-    <v-btn color="primary" v-if="props.props_openBtn ? true : false" @click="dialog = true">
+  <div class="">
+    <v-btn block color="primary" v-if="props.props_openBtn ? true : false" @click="dialog = true">
       {{ props_openBtn }}
     </v-btn>
 

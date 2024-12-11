@@ -19,7 +19,7 @@ class AxiosService {
   async get<T>(endpoint: string, params?: any) {
     const { exec, response, error } = useAxios<T>()
     await exec(this.createConfig(endpoint, 'GET', { params }))
-    return { data: response.value, error: error.value }
+    return { data: response.value as T, error: error.value }
   }
 
   async post<T>(endpoint: string, data: any) {
@@ -28,9 +28,9 @@ class AxiosService {
     return { data: response.value, error: error.value }
   }
 
-  async put<T>(endpoint: string, data: any) {
+  async patch<T>(endpoint: string, data: any) {
     const { exec, response, error } = useAxios<T>()
-    await exec(this.createConfig(endpoint, 'PUT', data))
+    await exec(this.createConfig(endpoint, 'PATCH', data))
     return { data: response.value, error: error.value }
   }
 

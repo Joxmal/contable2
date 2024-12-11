@@ -2,8 +2,9 @@
   <v-form @submit.prevent="onSubmit">
     <v-row>
       <v-col sm="6" cols="12">
-        <v-select :items="items" :item-props="itemProps" variant="filled" density="compact" label="Cuenta padre"
-          item-value="value" type="string" v-model="cuentaPadre.value.value" :error-messages="errors.cuentaPadre">
+        <v-select :disabled="update" :items="storeCuentasContables.combinedList" :item-props="itemProps"
+          variant="filled" density="compact" label="Cuenta padre" item-value="value" type="string"
+          v-model="cuentaPadre.value.value" :error-messages="errors.cuentaPadre">
         </v-select>
       </v-col>
       <v-col sm="6" cols="12">
@@ -38,8 +39,8 @@ import { useField, useForm } from 'vee-validate';
 import { useCuentasContablesStore } from '@/stores/cuentasContables/CuentasContables';
 import { ref } from 'vue';
 
-
 const storeCuentasContables = useCuentasContablesStore()
+
 const tittleButton = ref('')
 
 interface Props {
@@ -78,7 +79,7 @@ const description = useField<string>('description', validationSchema)
 
 const onSubmit = handleSubmit(async () => {
   storeCuentasContables.asignarFormulario({
-    cod: values.cod,
+    cod: +`${values.cuentaPadre + values.cod}`,
     cuentaPadreCod: values.cuentaPadre,
     description: values.description ? values.description : '',
     name: values.nombre
@@ -86,41 +87,14 @@ const onSubmit = handleSubmit(async () => {
   //---
   if (props.update) {
     //---actualizar
+    if (props.updateId)
+      storeCuentasContables.patchDataCuentas(props.updateId)
   } else {
     storeCuentasContables.PostDataCuentas()
   }
   // Aquí puedes usar localValues para enviar tus datos
 })
-const items = [
-  {
-    value: 1,
-    tipo: 'ACTIVO',
-  },
-  {
-    value: 2,
-    tipo: 'PASIVO',
-  },
-  {
-    value: 3,
-    tipo: 'PATRIMONIO',
-  },
-  {
-    value: 4,
-    tipo: 'CUENTAS DE ORDEN',
-  },
-  {
-    value: 5,
-    tipo: 'INGRESOS',
-  },
-  {
-    value: 6,
-    tipo: 'GASTOS',
-  },
-  {
-    value: 7,
-    tipo: 'CUENTAS DE CIERRE',
-  },
-]
+
 
 function itemProps(item: any) {
   return {

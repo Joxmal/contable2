@@ -112,7 +112,7 @@ const submit = handleSubmit(async () => {
 
   try {
     await Login(); // Llama a la función Login aquí
-    router.push('dashboard')
+    router.push({ name: 'DasboardPanelView' })
 
     // Llamar a la función iniciarSesion y esperar su resultado
     if (response.value)
