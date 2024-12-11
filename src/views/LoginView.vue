@@ -4,13 +4,13 @@
     <VRow align="center" justify="center">
 
       <VCol sm="4" lg="8" xl="7" class="pa-5 h-screen" v-if="$vuetify.display.mdAndUp">
-        <VImg cover src="/portada.webp" alt="Sign In" class="h-screen w-full rounded-lg" />
+        <VImg cover src="/portada.webp" alt="Portada" class="h-screen w-full rounded-lg" />
       </VCol>
       <VSpacer />
 
       <VCol class="px-5 px-lg-0" cols="12" sm="6" lg="4" xl="3">
         <div class="text-center">
-          <h1 class="font-weight-bold">Sign In</h1>
+          <h1 class="font-weight-bold">Iniciar Sesión</h1>
           <p class="text-medium-emphasis mt-1 text-subtitle-1">
             Coloque la llave de la compañia, el usuario y la contraseña
           </p>
@@ -34,10 +34,13 @@
       <VSpacer />
 
     </VRow>
+
   </VContainer>
 </template>
 
 <script setup lang="ts">
+import { toast } from 'vue3-toastify';
+
 import useAxios from '@/composables/useAxios';
 import { useRouter } from 'vue-router';
 import { useForm } from 'vee-validate';
@@ -48,19 +51,22 @@ import FormInput from '@/components/form/FormInput.vue';
 import { usePersistedStore } from '@/stores/persisted';
 
 
+const persistedStore = usePersistedStore()
 export interface ResponseAuth {
   token: string;
   user: User;
 }
 
+interface RoleCompany {
+  name: string
+  permissionsId: number
+}
 export interface User {
   firstName: string;
   lastName: string;
   rolePrimary: string;
-  roleCompany: string;
+  roleCompany: RoleCompany;
 }
-
-
 
 const { response, exec } = useAxios<ResponseAuth>(); // Cambia 'any' por el tipo de respuesta esperado
 
@@ -75,9 +81,8 @@ const Login = async () => {
   await exec(options);
 };
 
-
 const dataUser = ref({
-  authKeyCompany: 'assa',
+  authKeyCompany: '',
   username: '',
   Userpassword: '',
 })
@@ -93,20 +98,25 @@ const { handleSubmit, isSubmitting } = useForm({
 });
 const router = useRouter()
 
-const submit = handleSubmit(async (values) => {
+//NOTIFICACION ERROR AL INICIAR SESION
+const notify = () => {
+  toast("ERROR AL INICIAR SESIÓN", {
+    type: toast.TYPE.ERROR,
+    autoClose: 2000,
+    position: toast.POSITION.TOP_RIGHT
+  });
+}
+
+const submit = handleSubmit(async () => {
 
 
   try {
-    alert('hola')
     await Login(); // Llama a la función Login aquí
     router.push('dashboard')
-    console.log(values)
-    console.log(response.value)
-
 
     // Llamar a la función iniciarSesion y esperar su resultado
     if (response.value)
-      usePersistedStore().authSession = {
+      persistedStore.authSession = {
         token: response.value.token,
         user: {
           firstName: response.value.user.firstName,
@@ -118,13 +128,10 @@ const submit = handleSubmit(async (values) => {
       }
 
     //obtener todos los datos que tienen que persistir
-
-
-
-
     // Navegar a la página de dashboard después de iniciar sesión
     // await navigateTo("/admin/dashboard");
   } catch (error) {
+    notify()
     console.error('Error during login:', error);
     // Aquí puedes manejar el error, como mostrar un mensaje al usuario
   }

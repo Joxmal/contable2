@@ -4,11 +4,16 @@ export interface AuthSession {
   user: User
 }
 
+interface RoleCompany {
+  name: string
+  permissionsId: number
+}
+
 export interface User {
   firstName: string
   lastName: string
   rolePrimary: string
-  roleCompany: string
+  roleCompany: RoleCompany
 }
 
 export const usePersistedStore = defineStore('persisted', {

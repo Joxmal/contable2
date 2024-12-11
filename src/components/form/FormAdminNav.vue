@@ -17,18 +17,15 @@
         <div v-if="!rail">
           <p class="text-center mt-5 font-weight-semibold">{{ dataUser.authSession?.user.firstName }}</p>
           <p class="text-center text-body-2 text-medium-emphasis mt-1">
-            <a href="mailto:joxmal123@gmail.com">{{ dataUser.authSession?.user.roleCompany }}</a>
+            <a href="mailto:joxmal123@gmail.com">{{ dataUser.authSession?.user.roleCompany.name }}</a>
           </p>
         </div>
-      </VScaleTransition>{{
-        dataUser.authSession?.user
-      }}
+      </VScaleTransition>
     </div>
     <!-- Nav Items -->
     <VList nav>
-
       <template v-for="(m, i) in menu" :key="i">
-        <VListItem v-if="!m.items" link density="default" :to="m.to">
+        <VListItem v-if="!m.items" link density="default" :to="{ name: m.name }">
           <template #prepend>
             <VIcon size="22" :icon="m.icon" class="mr-4" />
           </template>
@@ -37,9 +34,9 @@
 
         <!-- añadir en el comparador || los que no quiero mostrar al los role users -->
         <VListGroup :value="m.title"
-          v-if="m.items && !((m.title === 'Crear/Editar' || m.title === 'Administrar') && usePersistedStore().authSession?.user.roleCompany === 'user')">
+          v-if="m.items && !((m.title === 'Registros' || m.title === 'Administrar') && usePersistedStore().authSession?.user.rolePrimary === 'Super Usuario')">
           <template #activator="{ props }">
-            <VListItem v-bind="props" density="comfortable" :to="m.to">
+            <VListItem v-bind="props" density="comfortable" :to="{ name: m.name }">
               <template #prepend>
                 <VIcon size="22" :icon="m.icon" class="mr-4" />
               </template>
@@ -50,7 +47,7 @@
           <div class="border-s ml-5">
             <template v-for="(child, k) in m.items" :key="`child-${k}`">
               <VListItem class="rounded-0" style="padding-inline-start: 26px !important" link color="primary"
-                density="compact" :to="child.to">
+                density="compact" :to="{ name: child.name }">
                 <VListItemTitle v-text="child.title" class="text-body-2 font-weight-regular" />
               </VListItem>
             </template>
@@ -83,32 +80,32 @@ const { drawer } = storeToRefs(useLayoutStore())
 
 const theme = useTheme();
 const menu = [
-  { title: "Panel", icon: "solar:home-angle-2-line-duotone", to: "/dashboard/panel" },
+  { title: "Panel", icon: "solar:home-angle-2-line-duotone", to: "/dashboard/panel", name: 'DasboardPanelView' },
   {
-    title: "LIBRO DIARIO",
+    title: "Registros",
     icon: "solar:box-line-duotone",
     items: [
-      { title: "Agencia", to: "/dashboard/test" },
-      { title: "Tasa Dolar", to: "/dashboard/panel" },
-      { title: "Bancas", to: "/admin/dashboard/gestion/banca" },
-      { title: "Programas", to: "/admin/dashboard/gestion/programas" },
-      { title: "Cajas / Usuarios", to: "/admin/dashboard/gestion/cajas" },
-      { title: "Cajeros", to: "/admin/dashboard/gestion/cajeros" },
+      { title: "Cuentas Contables", to: "", name: 'DasboardCuentasContables' },
+      { title: "Auxiliares(Etiquetas)", to: "", name: 'DasboardCuentasContables' },
+      { title: "Periodos Contables", to: "/admin/dashboard/gestion/banca", name: 'DasboardCuentasContables' },
     ],
   },
   {
-    title: "Administrar",
+    title: "Reportes",
     icon: "wpf:statistics",
     items: [
-      { title: "Cierres Diarios", to: "/admin/dashboard/administrar/cierreDiario" },
-      { title: "Premios", to: "/admin/dashboard/administrar/premios" },
+      { title: "Estado de Resultados", to: "/admin/dashboard/administrar/cierreDiario", name: 'DasboardCuentasContables' },
+      { title: "Balance General", to: "", name: 'DasboardCuentasContables' },
+      { title: "Balance de Comprobración", to: "", name: 'DasboardCuentasContables' },
+      { title: "Libro Diario", to: "", name: 'DasboardCuentasContables' },
+      { title: "Ganancia o Pérdida Cambiaria", to: "", name: 'DasboardCuentasContables' },
     ],
   },
   {
     title: "Cierre Diario",
     icon: "solar:users-group-two-rounded-line-duotone",
     items: [
-      { title: "Programas", to: "/admin/dashboard/cierreDiario/programas" },
+      { title: "Programas", to: "/admin/dashboard/cierreDiario/programas", name: 'DasboardCuentasContables' },
       // { title: "Premios", to: "/admin/dashboard/cierreDiario/premios" },
       // { title: "Boletería", to: "/admin/dashboard" },
       // { title: "Hípico", to: "/admin/dashboard" },

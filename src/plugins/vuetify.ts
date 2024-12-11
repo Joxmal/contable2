@@ -5,9 +5,6 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi'
 // import { Icon } from '@iconify/vue'
 import 'vuetify/styles'
 
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-
 import { es, en } from 'vuetify/locale'
 
 // Custom icons
@@ -47,8 +44,6 @@ const dark: ThemeDefinition = {
 }
 
 export const vuetify = createVuetify({
-  components,
-  directives,
   locale: {
     locale: 'es',
     fallback: 'en',

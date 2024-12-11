@@ -1,9 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
-import AnotherView from '@/views/AnotherView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import { loadLayoutMiddleware } from './middleware/loadLayoutMiddleware'
 import LoginView from '@/views/LoginView.vue'
+import authMiddleware from './middleware/authMiddleware'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +13,7 @@ const router = createRouter({
       component: LoginView,
       meta: {
         layout: 'BlanckLayout',
+        requireAuth: false,
       },
     },
     {
@@ -23,37 +23,26 @@ const router = createRouter({
       children: [
         {
           path: 'panel',
-          name: 'panelView',
+          name: 'DasboardPanelView',
           component: () => import('../views/admin/dashboard/PanelView.vue'),
         },
         {
-          path: 'test',
-          name: 'TestView',
-          component: () => import('../views/admin/dashboard/PruebaView.vue'),
+          path: 'registro',
+          name: 'registrosView',
+          component: () => import('../views/admin/dashboard/registros/RouterView.vue'),
+          children: [
+            {
+              path: 'cuentasContables',
+              name: 'DasboardCuentasContables',
+              component: () =>
+                import('../views/admin/dashboard/registros/CuentasContablesView.vue'),
+            },
+          ],
         },
       ],
       meta: {
         layout: 'DefaultLayout',
-      },
-    },
-
-    {
-      path: '/another_view',
-      name: 'Another',
-      component: AnotherView,
-      meta: {
-        layout: 'DefaultLayout',
-      },
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
-      meta: {
-        layout: 'MainLayout',
+        requireAuth: true,
       },
     },
     {
@@ -64,5 +53,9 @@ const router = createRouter({
   ],
 })
 
+// Middleware para cargar el layout
 router.beforeEach(loadLayoutMiddleware)
+
+// Middleware global para manejar la autenticación
+router.beforeEach(authMiddleware)
 export default router

@@ -2,7 +2,7 @@
 <template>
   <component :is="route.meta.layoutComponent">
     <router-view />
-    {{ x }}- {{ y }}
+    <!-- {{ x }}- {{ y }} -->
   </component>
 
 
@@ -18,10 +18,10 @@
 
 
 import { useRoute } from 'vue-router';
-import { useMouse } from './composables/useMouse';
+// import { useMouse } from './composables/useMouse';
 import { onMounted, ref, defineAsyncComponent } from 'vue';
 
-const { x, y } = useMouse()
+// const { x, y } = useMouse()
 const route = useRoute();
 const layout = ref<null | any>(null); // Inicializa como null
 

@@ -31,7 +31,8 @@ export default [
   {
     rules: {
       '@typescript-eslint/no-explicit-any': 'off', // O usa 'warn' si prefieres advertencias
-      'vue/no-v-text-v-html-on-component': 'off'
+      'vue/no-v-text-v-html-on-component': 'off',
+      'vue/valid-v-slot': 'off',
     },
   },
   skipFormatting,

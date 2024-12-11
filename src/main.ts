@@ -19,6 +19,10 @@ pinia.use(piniaPluginPersistedstate)
 import App from './App.vue'
 import router from './router'
 
+//Vue3Toastify
+import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify'
+import 'vue3-toastify/dist/index.css'
+
 // Función para crear un conjunto de iconos utilizando Iconify
 /* const iconify = (set: string) => ({
   component: (props: IconProps) => h(Icon, { icon: `${set}:${props.icon}`, disabled: props.disabled }),
@@ -156,6 +160,10 @@ const vuetify = createVuetify({
 })
 
 const app = createApp(App)
+
+app.use(Vue3Toastify, {
+  autoClose: 3000,
+} as ToastContainerOptions)
 
 app.use(pinia)
 app.use(router)

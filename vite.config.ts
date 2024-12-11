@@ -5,20 +5,24 @@ import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import { VitePWA } from 'vite-plugin-pwa'
 import vuetify from 'vite-plugin-vuetify'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    vuetify({
+      autoImport: true,
+    }),
     vueDevTools(),
-    vuetify(),
+    visualizer({ open: true }),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'Vue PWA',
-        short_name: 'Vue PWA',
-        description: 'Vue PWA',
+        name: 'Sistema de Información Contable',
+        short_name: 'SIC',
+        description: 'Sistema de Información Contable multi empresa',
         theme_color: '#ffffff',
         icons: [
           {
