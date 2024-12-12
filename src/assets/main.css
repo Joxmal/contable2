@@ -1,0 +1,9 @@
+*{
+  scrollbar-color: #3f51b5 transparent !important;
+  scrollbar-width: thin !important;
+}
+
+
+.daTableBorder table td+td {
+  border-left: 1px solid #dddddd;
+}

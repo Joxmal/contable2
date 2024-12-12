@@ -39,6 +39,19 @@ const router = createRouter({
             },
           ],
         },
+
+        {
+          path: 'reportes',
+          name: 'reportesView',
+          component: () => import('../views/admin/dashboard/reportes/RouterView.vue'),
+          children: [
+            {
+              path: 'libroDiario',
+              name: 'DasboardReportesLibroDiario',
+              component: () => import('../views/admin/dashboard/reportes/LibroDiarioView.vue'),
+            },
+          ],
+        },
       ],
       meta: {
         layout: 'DefaultLayout',

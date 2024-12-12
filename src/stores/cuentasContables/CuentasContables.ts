@@ -41,10 +41,11 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
   //computed
 
   const combinedList = computed(() => {
-    const litaTiposCuentas = dataCuentasContables.value.cuentasTipo
+    const litaTiposCuentas = Object.values(dataCuentasContables.value.cuentasTipo)
     const litaCuentas = dataCuentasContables.value.cuentaContables
 
     console.log('litaCuentas', litaCuentas)
+    console.log('litaTiposCuentas', litaTiposCuentas)
     const litaCuentaTiposMap = litaTiposCuentas.map((values) => {
       return {
         value: values.codigo,
@@ -86,10 +87,8 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
   async function fetchDataCuentasTipo() {
     const { data, error } = await AxiosService.get<cuentasTipo[]>('/cuentas-contables/tipos')
 
-    console.log(data)
-    dataCuentasContables.value.cuentasTipo = data
     if (error) {
-      toast.error('error')
+      toast.error('error al obtener tipos de cuentas primarios')
     } else {
       dataCuentasContables.value.cuentasTipo = data
     }
@@ -106,26 +105,20 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
     }
   }
 
-  //-----crear las cuentas contables hijas de los tipos principales
   async function PostDataCuentas() {
     const body = { ...formCreateCuentasContables.value }
     const { data, error } = await AxiosService.post('/cuentas-contables', body)
     console.log(data)
     if (error) {
       toast.error('error')
-    } else {
-      reload.value++
-      toast.success('Creado correctamente')
     }
 
-    if (error) {
-      toast.error('error')
-    } else {
-      dataCuentasContables.value.cuentasTipo = data
-    }
+    reload.value++
+    toast.success('Creado correctamente')
+    dataCuentasContables.value.cuentasTipo = data
   }
 
-  //-----editar las cuentas contables hijas de los tipos principales
+  //-----editar las cuentas contables
   async function patchDataCuentas(id: number) {
     const body = { ...formCreateCuentasContables.value }
     const { error } = await AxiosService.patch(`/cuentas-contables/${id}`, body)

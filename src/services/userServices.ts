@@ -1,19 +1,33 @@
 import useAxios from '@/composables/useAxios'
 import type { AxiosRequestConfig } from 'axios'
+import { usePersistedStore } from '@/stores/persisted'
 
 class AxiosService {
   private baseURL: string
+  private token: string | undefined = usePersistedStore().authSession?.token
 
   constructor(baseURL: string = '/api') {
     this.baseURL = baseURL
   }
 
+  setToken(token: string | undefined) {
+    this.token = token
+  }
+
   private createConfig(endpoint: string, method: string, data?: any): AxiosRequestConfig {
-    return {
+    const config: AxiosRequestConfig = {
       url: `${this.baseURL}${endpoint}`,
       method,
       data,
     }
+
+    if (this.token) {
+      config.headers = {
+        Authorization: `Bearer ${this.token}`,
+      }
+    }
+
+    return config
   }
 
   async get<T>(endpoint: string, params?: any) {

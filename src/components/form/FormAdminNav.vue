@@ -24,8 +24,9 @@
     </div>
     <!-- Nav Items -->
     <VList nav>
-      <template v-for="(m, i) in menu" :key="i">
-        <VListItem v-if="!m.items" link density="default" :to="{ name: m.name }">
+      <template v-for="(m, i) in menu" :key="`${i}-${m}`">
+        <VListItem :active="activeItem === m.name" @click="toView(m.name as string)" v-if="!m.items" link
+          density="default">
           <template #prepend>
             <VIcon size="22" :icon="m.icon" class="mr-4" />
           </template>
@@ -36,7 +37,7 @@
         <VListGroup :value="m.title"
           v-if="m.items && !((m.title === 'Registros' || m.title === 'Administrar') && usePersistedStore().authSession?.user.rolePrimary === 'Super Usuario')">
           <template #activator="{ props }">
-            <VListItem v-bind="props" density="comfortable" :to="{ name: m.name }">
+            <VListItem v-bind="props" density="comfortable">
               <template #prepend>
                 <VIcon size="22" :icon="m.icon" class="mr-4" />
               </template>
@@ -45,9 +46,9 @@
           </template>
 
           <div class="border-s ml-5">
-            <template v-for="(child, k) in m.items" :key="`child-${k}`">
-              <VListItem class="rounded-0" style="padding-inline-start: 26px !important" link color="primary"
-                density="compact" :to="{ name: child.name }">
+            <template v-for="(child, index) in m.items" :key="`${index}+${child.title}`">
+              <VListItem :active="activeItem === child.name" @click="toView(child.name)" class="rounded-0"
+                style="padding-inline-start: 26px !important" link color="primary" density="compact" :toView="''">
                 <VListItemTitle v-text="child.title" class="text-body-2 font-weight-regular" />
               </VListItem>
             </template>
@@ -71,45 +72,40 @@ import { usePersistedStore } from "@/stores/persisted";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import { useTheme } from "vuetify";
+import { useRouter } from "vue-router";
 
 const dataUser = usePersistedStore()
 
 const rail = ref(false);
+const router = useRouter()
+const activeItem = ref('')
+const toView = (name: string) => {
+  activeItem.value = name
+  router.push({ name: name })
+}
 
 const { drawer } = storeToRefs(useLayoutStore())
-
 const theme = useTheme();
 const menu = [
-  { title: "Panel", icon: "solar:home-angle-2-line-duotone", to: "/dashboard/panel", name: 'DasboardPanelView' },
+  { title: "Panel", icon: "solar:home-angle-2-line-duotone", name: 'DasboardPanelView' },
   {
     title: "Registros",
     icon: "solar:box-line-duotone",
     items: [
-      { title: "Cuentas Contables", to: "", name: 'DasboardCuentasContables' },
-      { title: "Auxiliares(Etiquetas)", to: "", name: 'DasboardCuentasContables' },
-      { title: "Periodos Contables", to: "/admin/dashboard/gestion/banca", name: 'DasboardCuentasContables' },
+      { title: "Cuentas Contables", name: 'DasboardCuentasContables' },
+      // { title: "Auxiliares(Etiquetas)", to: "", name: 'DasboardCuentasContables' },
+      // { title: "Periodos Contables", to: "/admin/dashboard/gestion/banca", name: 'DasboardCuentasContables' },
     ],
   },
   {
     title: "Reportes",
     icon: "wpf:statistics",
     items: [
-      { title: "Estado de Resultados", to: "/admin/dashboard/administrar/cierreDiario", name: 'DasboardCuentasContables' },
-      { title: "Balance General", to: "", name: 'DasboardCuentasContables' },
-      { title: "Balance de Comprobración", to: "", name: 'DasboardCuentasContables' },
-      { title: "Libro Diario", to: "", name: 'DasboardCuentasContables' },
-      { title: "Ganancia o Pérdida Cambiaria", to: "", name: 'DasboardCuentasContables' },
-    ],
-  },
-  {
-    title: "Cierre Diario",
-    icon: "solar:users-group-two-rounded-line-duotone",
-    items: [
-      { title: "Programas", to: "/admin/dashboard/cierreDiario/programas", name: 'DasboardCuentasContables' },
-      // { title: "Premios", to: "/admin/dashboard/cierreDiario/premios" },
-      // { title: "Boletería", to: "/admin/dashboard" },
-      // { title: "Hípico", to: "/admin/dashboard" },
-      // { title: "Otros", to: "/admin/dashboard" },
+      // { title: "Estado de Resultados", to: "", name: 'DasboardCuentasContables' },
+      // { title: "Balance General", to: "", name: 'DasboardCuentasContables' },
+      // { title: "Balance de Comprobración", to: "", name: 'DasboardCuentasContables' },
+      { title: "Libro Diario", name: 'DasboardReportesLibroDiario' },
+      // { title: "Ganancia o Pérdida Cambiaria", to: "", name: 'DasboardCuentasContables' },
     ],
   },
 
