@@ -1,10 +1,10 @@
 <template>
   <v-row class="pb-2">
     <v-col>
-      <DialogGeneral @close="update = false" ref="dialog"
+      <DialogGeneral :closed-number-dialog="closedNumberDialog" @close="update = false" ref="dialog"
         :props_title-dialog="update ? 'Editar Cuenta' : 'Crear Cuenta'" props_open-btn="CREAR CUENTA">
         <template #contenido>
-          <CreateUpdateCuentasContables :update="update" :updateId="updateId" ref="dialogContenido" />
+          <CreateUpdateCuentasContables @post="ocultar" :update="update" :updateId="updateId" ref="dialogContenido" />
         </template>
       </DialogGeneral>
     </v-col>
@@ -41,6 +41,14 @@ watch(reload, () => {
   storeCuentasContables.fetchDataCuentas()
   storeCuentasContables.fetchDataCuentasTipo()
 })
+
+//ocultar el dialogo al crear o editar
+const closedNumberDialog = ref(0)
+function ocultar(value: boolean) {
+  if (value)
+    closedNumberDialog.value++
+}
+
 
 //EDITAR
 const dialog = ref<InstanceType<typeof DialogGeneral> | null>(null);

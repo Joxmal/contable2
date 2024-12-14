@@ -88,7 +88,9 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
     const { data, error } = await AxiosService.get<cuentasTipo[]>('/cuentas-contables/tipos')
 
     if (error) {
-      toast.error('error al obtener tipos de cuentas primarios')
+      const message = 'error al obtener tipos de cuentas primarios'
+      toast.error(message)
+      throw new Error(message)
     } else {
       dataCuentasContables.value.cuentasTipo = data
     }
@@ -100,6 +102,7 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
     console.log('data', data)
     if (error) {
       toast.error('error')
+      throw new Error()
     } else {
       dataCuentasContables.value.cuentaContables = data
     }
@@ -107,15 +110,14 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
 
   async function PostDataCuentas() {
     const body = { ...formCreateCuentasContables.value }
-    const { data, error } = await AxiosService.post('/cuentas-contables', body)
-    console.log(data)
-    if (error) {
-      toast.error('error')
-    }
 
-    reload.value++
-    toast.success('Creado correctamente')
-    dataCuentasContables.value.cuentasTipo = data
+    try {
+      await AxiosService.post('/cuentas-contables', body)
+      reload.value++
+    } catch (error: any) {
+      toast.error(error.response.data.message)
+      throw new Error()
+    }
   }
 
   //-----editar las cuentas contables
@@ -125,6 +127,7 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
 
     if (error) {
       toast.error('error')
+      throw new Error()
     } else {
       reload.value++
       toast.success('Editado correctamente')
@@ -140,6 +143,7 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
 
     if (error) {
       toast.error('error')
+      throw new Error()
     } else {
       reload.value++
     }

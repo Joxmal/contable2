@@ -2,8 +2,8 @@
 
   <v-row class="pb-2">
     <v-col>
-      <DialogGeneral @close="update = false" ref="dialog"
-        :props_title-dialog="update ? 'Editar Cuenta' : 'Crear Cuenta'" props_open-btn="CREAR CUENTA">
+      <DialogGeneral persistent @close="update = false" ref="dialog"
+        :props_title-dialog="update ? 'Editar Asiento' : 'Crear Asiento'" props_open-btn="CREAR CUENTA">
         <template #contenido>
           <CRUDFormLibroDiario :update="update" :updateId="updateId" ref="dialogContenido" />
         </template>
@@ -22,9 +22,8 @@ import TableDataLibroDiario from '@/components/TableData/TableDataLibroDiario.vu
 import { useCuentasContablesStore } from '@/stores/cuentasContables/CuentasContables';
 import { onMounted, ref } from 'vue';
 const storeCuentasContables = useCuentasContablesStore()
-onMounted(() => {
-  storeCuentasContables.fetchDataCuentas()
-  storeCuentasContables.fetchDataCuentasTipo()
+onMounted(async () => {
+  await storeCuentasContables.fetchDataCuentas()
 })
 //EDITAR
 const update = ref(false)

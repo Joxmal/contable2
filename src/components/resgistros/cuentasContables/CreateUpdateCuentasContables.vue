@@ -39,9 +39,7 @@ import { useField, useForm } from 'vee-validate';
 import { useCuentasContablesStore } from '@/stores/cuentasContables/CuentasContables';
 import { ref } from 'vue';
 
-const storeCuentasContables = useCuentasContablesStore()
 
-const tittleButton = ref('')
 
 interface Props {
   updateId?: number
@@ -49,6 +47,13 @@ interface Props {
 }
 const props = defineProps<Props>();
 
+const emit = defineEmits<{
+  // <eventName>: <expected arguments>
+  post: [value: boolean] // named tuple syntax
+}>()
+
+const storeCuentasContables = useCuentasContablesStore()
+const tittleButton = ref('')
 if (props.update) {
   tittleButton.value = 'Editar'
 } else {
@@ -87,10 +92,11 @@ const onSubmit = handleSubmit(async () => {
   //---
   if (props.update) {
     //---actualizar
-    if (props.updateId)
-      storeCuentasContables.patchDataCuentas(props.updateId)
+    if (props.updateId) {
+      storeCuentasContables.patchDataCuentas(props.updateId).then(() => emit('post', true))
+    }
   } else {
-    storeCuentasContables.PostDataCuentas()
+    storeCuentasContables.PostDataCuentas().then(() => emit('post', true))
   }
   // Aquí puedes usar localValues para enviar tus datos
 })
