@@ -15,9 +15,9 @@
       <VImg src="/pwa-512x512.png" contain class="mx-auto" :height="rail ? 50 : 70" :width="rail ? 40 : undefined" />
       <VScaleTransition leave-absolute>
         <div v-if="!rail">
-          <p class="text-center mt-5 font-weight-semibold">{{ dataUser.authSession?.user.firstName }}</p>
+          <p class="text-center mt-5 font-weight-semibold">{{ dataUser.authSession?.user?.firstName || '' }}</p>
           <p class="text-center text-body-2 text-medium-emphasis mt-1">
-            <a href="mailto:joxmal123@gmail.com">{{ dataUser.authSession?.user.roleCompany.name }}</a>
+            <a href="mailto:joxmal123@gmail.com">{{ dataUser.authSession?.user?.roleCompany.name }}</a>
           </p>
         </div>
       </VScaleTransition>
@@ -35,7 +35,7 @@
 
         <!-- añadir en el comparador || los que no quiero mostrar al los role users -->
         <VListGroup :value="m.title"
-          v-if="m.items && !((m.title === 'Registros' || m.title === 'Administrar') && usePersistedStore().authSession?.user.rolePrimary === 'Super Usuario')">
+          v-if="m.items && !((m.title === 'Registros' || m.title === 'Administrar') && usePersistedStore().authSession?.user?.rolePrimary === 'Super Usuario')">
           <template #activator="{ props }">
             <VListItem v-bind="props" density="comfortable">
               <template #prepend>

@@ -11,18 +11,172 @@
   </v-row>
 
 
+  <DialogGeneral color-btn="success" @close="update = false" ref="dialog"
+    :props_title-dialog="update ? 'Editar Cuenta' : 'Crear Cuenta'" props_open-btn="CREAR USANDO EXCEL">
+    <template #contenido>
+      <DialogGeneral props_open-btn="EJEMPLO">
+        <template #contenido>
+          <VImg cover src="/images/examples/excelEjemploCuentasContables.webp" alt="Portada" class=" rounded-lg" />
+        </template>
+      </DialogGeneral>
+      <ImportFileExcel @items-raw="obtenerItemsExcel" />
+      <TableDataGeneral :row-props="rowProws" table_title="Datos del del excel" v-if="itemsExcel.length > 0"
+        :table_items="itemsExcel" :table_headers="table_headers">
+      </TableDataGeneral>
+      <VBtn @click="enviarDataExcel">ENVIAR </VBtn>
+    </template>
+  </DialogGeneral>
+
+
   <!-- tabla de cuentas contables -->
   <TableDataCuentaContable :items="storeCuentasContables.dataCuentasContables.cuentaContables"
     @eliminar="storeCuentasContables.deleteDataCuentas($event as number)" @editar="updateForm" />
 </template>
 <script setup lang="ts">
-import TableDataCuentaContable from '@/components/TableData/TableDataCuentaContable.vue'
 import { useCuentasContablesStore } from '@/stores/cuentasContables/CuentasContables';
-import { onMounted, ref, watch } from 'vue';
+import TableDataCuentaContable from '@/components/TableData/TableDataCuentaContable.vue'
+import { onMounted, ref, watch, type Ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import CreateUpdateCuentasContables from '@/components/resgistros/cuentasContables/CreateUpdateCuentasContables.vue';
 import DialogGeneral from '@/components/dialog/DialogGeneral.vue';
 import useWaitForDialog from '@/composables/useWaitForDialog';
+import ImportFileExcel from '@/composables/test/ImportFileExcel.vue';
+import TableDataGeneral from '@/components/TableData/TableDataGeneral.vue';
+import type { ReadonlyHeaders, ReadonlyRowProps } from '@/interface/vuetify/dataTable';
+import { toast } from 'vue3-toastify';
+
+
+//testing de los datos a pasar TODO: PASAR A OTRO COMPONENTE
+
+
+
+// Definimos un tipo para un array de arrays
+type ItemsExcelArray = (string | number | null | undefined)[][];
+
+const itemsExcel = ref([]) as Ref<ItemsExcelArray>
+const dataExcelEnviarBD = ref<any>([])
+function obtenerItemsExcel(itemsExcelArray: ItemsExcelArray) {
+  const tipoCuentas = useCuentasContablesStore().dataCuentasContables.cuentasTipo
+
+  validateRows({ rows: itemsExcelArray })
+
+
+
+  itemsExcelArray.forEach((item) => {
+
+
+    if (typeof item[0] === 'number') {
+      // Obtener el primer dígito del código
+      const primerDigito = +String(item[0]).charAt(0);
+
+      // Buscar el nombre correspondiente en tipoCuentas
+      const tipoCuenta = tipoCuentas.find((tipoCuenta) => tipoCuenta.codigo === primerDigito);
+
+      if (tipoCuenta) {
+        dataExcelEnviarBD.value.push({
+          cuentaPadreCod: primerDigito,
+          cod: item[0],
+          name: item[1],
+          description: item[2],
+        })
+        // Agregar el nombre al final del subarray
+        item.push(tipoCuenta.nombre);
+      } else {
+        toast.error(`No se encontró el tipo de cuenta para el código: ${item[0]}`, {
+          autoClose: false
+        })
+        // Lanzar un error si no se encuentra el tipo de cuenta
+        throw new Error(`No se encontró el tipo de cuenta para el código: ${item[0]}`);
+      }
+
+    }
+  })
+  //eliminar el primer que representa el encabezado
+  itemsExcelArray.shift()
+
+  itemsExcel.value = itemsExcelArray
+}
+
+const table_headers: ReadonlyHeaders = [
+  {
+    key: '3',
+    title: 'TIPO'
+  },
+  {
+    key: '0',
+    title: 'código'
+  },
+  {
+    key: '1',
+    title: 'nombre'
+  },
+  {
+    key: '2',
+    title: 'descripción'
+  }
+]
+
+function rowProws(item: any): ReadonlyRowProps {
+  if (item.index % 2 === 0) {
+    return { class: 'bg-blue-grey-lighten-5' }
+  }
+
+}
+
+function validateRows({ rows }: { rows: any[] }) {
+
+  const cuentaContables = useCuentasContablesStore().dataCuentasContables.cuentaContables
+
+
+  const codigosRepetidos = []
+  // Definir el formato esperado
+  const expectedLength = 3; // Se espera que cada fila tenga 4 elementos
+
+  for (let i = 1; i < rows.length; i++) { // Comenzar desde 1 para omitir encabezados
+    const row = rows[i];
+
+
+    const codigo = cuentaContables.find((cuentaExistente) => cuentaExistente.codigo === row[0])?.codigo
+
+    if (codigo) {
+      codigosRepetidos.push(codigo)
+    }
+
+    // Verificar la longitud de la fila
+    if (row.length !== expectedLength) {
+      toast.error(`Fila ${i + 1} no cumple con el formato esperado. Se esperaban ${expectedLength} columnas.`)
+      throw new Error(`Fila ${i + 1} no cumple con el formato esperado. Se esperaban ${expectedLength} columnas.`);
+    }
+
+    // Verificar tipos de datos
+    if (typeof row[0] !== 'number' || typeof row[1] !== 'string' || typeof row[2] !== 'string' && row[2] !== null) {
+      toast.error(`Fila ${i + 1} contiene tipos de datos incorrectos.`)
+      throw new Error(`Fila ${i + 1} contiene tipos de datos incorrectos.`);
+    }
+
+
+  }
+
+  if (codigosRepetidos.length > 0) {
+    toast.error(`los codigos [${codigosRepetidos}] ya existen en la base de datos actual`, {
+      autoClose: false
+    })
+    throw new Error();
+  }
+
+}
+
+function enviarDataExcel() {
+
+  console.log(dataExcelEnviarBD.value)
+
+  dataExcelEnviarBD.value.forEach((element: any) => {
+    useCuentasContablesStore().PostDataCuentas({ reloadData: false, bodyManual: element })
+  });
+  useCuentasContablesStore().reload++
+
+}
+//----------------------------------------------------------
 
 
 //store

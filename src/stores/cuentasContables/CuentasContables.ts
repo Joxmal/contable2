@@ -108,12 +108,24 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
     }
   }
 
-  async function PostDataCuentas() {
-    const body = { ...formCreateCuentasContables.value }
+  async function PostDataCuentas({
+    reloadData = true,
+    bodyManual,
+  }: {
+    reloadData?: boolean
+    bodyManual?: any
+  }) {
+    let body
+    if (!bodyManual) {
+      body = { ...formCreateCuentasContables.value }
+    }
+    body = bodyManual
 
     try {
       await AxiosService.post('/cuentas-contables', body)
-      reload.value++
+      if (reloadData) {
+        reload.value++
+      }
     } catch (error: any) {
       toast.error(error.response.data.message)
       throw new Error()

@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <v-btn block color="primary" v-if="props.props_openBtn ? true : false" @click="dialog = true">
+    <v-btn block :color="colorBtn" v-if="props.props_openBtn ? true : false" @click="dialog = true">
       {{ props_openBtn }}
     </v-btn>
 
@@ -39,12 +39,14 @@ const props = withDefaults(
     props_prepend_icon?: string
     closedNumberDialog?: number
     persistent?: boolean
+    colorBtn?: string
   }>(),
   {
     props_titleDialog: 'Titulo',
     props_prepend_icon: 'mdi-folder-plus-outline',
     closedNumberDialog: 0,
-    persistent: false
+    persistent: false,
+    colorBtn: 'primary'
   }
 );
 const dialog: Ref<boolean> = ref(false)

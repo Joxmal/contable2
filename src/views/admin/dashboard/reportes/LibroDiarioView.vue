@@ -13,16 +13,18 @@
 
   <TableDataLibroDiario :items="items" :totalItemsSuma="totalItemsSuma" />
 
-  {{ totalItemsSuma }}
-  <pre>
-  {{ items }}
-</pre>
+  <hr>
+  <ImportFileExcel></ImportFileExcel>
+
+
+
 </template>
 
 <script setup lang="ts">
 import DialogGeneral from '@/components/dialog/DialogGeneral.vue';
 import CRUDFormLibroDiario from '@/components/reportes/libroDiario/CRUDFormLibroDiario.vue';
 import TableDataLibroDiario from '@/components/TableData/TableDataLibroDiario.vue';
+import ImportFileExcel from '@/composables/test/ImportFileExcel.vue';
 
 import { useCuentasContablesStore } from '@/stores/cuentasContables/CuentasContables';
 import { useLibroDiarioStore, type GetDataLibroDiario } from '@/stores/libroDiario/LibroDiario';

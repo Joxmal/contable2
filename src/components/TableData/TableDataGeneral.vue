@@ -25,6 +25,13 @@
           </td>
         </tr>
       </template>
+
+      <template v-slot:top>
+        <div class="text-center  bg-blue-grey-lighten-3 font-weight-bold text-h6">
+          {{ props.table_title }}
+        </div>
+      </template>
+
     </v-data-table>
   </v-card>
 </template>
@@ -32,6 +39,8 @@
 <script setup lang="ts">
 import type { ReadonlyHeaders, ReadonlyItems, ReadonlyRowProps } from '@/interface/vuetify/dataTable';
 import { ref } from 'vue';
+
+
 
 interface extraActions {
   icon: string
