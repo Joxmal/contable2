@@ -23,7 +23,7 @@
       <template v-slot:expanded-row="{ columns, item }">
         <tr>
           <td class="text-blue-darken-1 text-subtitle-1 font-weight-bold text-center py-1" :colspan="columns.length">
-            {{ item.description }}
+            {{ item.descripcion }}
           </td>
         </tr>
       </template>
@@ -37,6 +37,19 @@
           mdi-delete
         </v-icon>
       </template>
+
+      <template v-slot:body.append>
+
+        <tr :class="props.totalItemsSuma.isValid ? 'bg-blue-grey-lighten-3' : 'bg-red-lighten-4'"
+          class="text-left  font-weight-bold">
+          <td colspan="3" class="border-e-md text-center ">TOTAL</td>
+          <td class="border-e-md">{{ props.totalItemsSuma.debe }}</td>
+          <td class="border-e-md">{{ props.totalItemsSuma.haber }}</td>
+          <td></td>
+          <td></td>
+        </tr>
+      </template>
+
     </v-data-table>
   </v-card>
 
@@ -44,10 +57,14 @@
 
 <script setup lang="ts">
 import type { ReadonlyHeaders, ReadonlyItems } from '@/interface/vuetify/dataTable';
+import type { TotalItemsSuma } from '@/views/admin/dashboard/reportes/LibroDiarioView.vue';
 import { ref } from 'vue';
 
-defineProps<{
+
+
+const props = defineProps<{
   items: ReadonlyItems
+  totalItemsSuma: TotalItemsSuma
 }>();
 
 const headers: ReadonlyHeaders = [
@@ -70,6 +87,9 @@ const headers: ReadonlyHeaders = [
   {
     key: 'cuentaId',
     title: 'Cuenta',
+    value(item) {
+      return item.cuentaName + `( ${item.cuentaId})`
+    },
   },
   {
     key: 'debe',

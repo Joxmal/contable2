@@ -136,7 +136,9 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
 
   //-----eliminar tipo de cuenta contable
   async function deleteDataCuentas(id: number) {
-    const confirma = confirm('¿Quiere eliminar Esta Cuenta Contable?')
+    const confirma = confirm(
+      '¿Quiere eliminar Esta Cuenta Contable, podrian quedar codigos  huerfanos en el libro diario?',
+    )
     if (!confirma) return
 
     const { error } = await AxiosService.delete<CuentaContables[]>(`/cuentas-contables/${id}`)

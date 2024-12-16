@@ -1,35 +1,16 @@
 <template>
-  <v-form v-model="isFormValid" @submit.prevent="onSubmit">
-    <v-row align="center" justify="center">
-      <v-col cols="6" md="2" class="text-body-2 font-weight-semibold text-center">
-        <v-text-field :rules="[rules.min0_required]" label="ASIENTO N°" type="number" variant="plain" density="compact">
-        </v-text-field>
+  <v-form @submit.prevent="onSubmit">
 
+    <div style="position: absolute; margin-top: 0; margin-right: 0;">
+      <v-checkbox hide-details density="compact" label="Asiento Manual" v-model="asignarAsientoManual"></v-checkbox>
+    </div>
+    <v-row align="center" justify="center">
+      <v-col cols="6" md="2">
+        <v-text-field :disabled="!asignarAsientoManual" v-model="asiento" class="centered-input-large" variant="filled"
+          :rules="!asignarAsientoManual ? [] : [rules.min1_required]" label="ASIENTO N°" type="number">
+        </v-text-field>
       </v-col>
     </v-row>
-
-    <!-- <v-row no-gutters>
-      <v-col sm="4" cols="12">
-        <v-autocomplete item-value="codigo" item-title="nombre" item-subtitle="2" :error-messages="errors.cuentaId"
-          :items="useCuentasContablesStore().dataCuentasContables.cuentaContables" density="compact">
-
-          <template v-slot:item="{ props, item }">
-            <v-list-item v-bind="props" :subtitle="item.raw.codigo" :title="item.raw.nombre"></v-list-item>
-          </template>
-
-</v-autocomplete>
-</v-col>
-<v-col sm="4" cols="6">
-  <v-text-field label="DEBE" density="compact" />
-</v-col>
-<v-col sm="4" cols="6">
-  <v-text-field label="HABER" density="compact" />
-</v-col>
-<v-col sm="12" cols="12">
-  <v-textarea rows="1" density="compact" label="Descripción" persistent-hint hint="opcional" type="string" />
-</v-col>
-</v-row> -->
-
 
     <v-divider></v-divider>
     <v-card title="Tabla a insertar" class="mb-2">
@@ -47,7 +28,7 @@
         <tbody>
 
           <tr v-for="(item, index) in dataBorrador" :key="`${item}+ ${index}`">
-            <td width="220" class="border-e-md pa-0">
+            <td style="min-width: 220px" class=" border-e-md pa-0">
               <v-autocomplete :rules="[rules.required]" v-model="item.cuentaID" style=" width: 100%; height: 100%;"
                 hide-details variant="plain" item-value="codigo" item-title="nombre" item-subtitle="2"
                 :items="useCuentasContablesStore().dataCuentasContables.cuentaContables" density="compact">
@@ -72,7 +53,7 @@
                 v-model.number="item.haber" class="text-center w-100 h-100 pa-0" />
             </td>
             <td width="150" class="border-e-md pa-0">
-              <textarea rows="1" class="text-center w-100 h-100"></textarea>
+              <textarea v-model="item.description" rows="1" class="text-center w-100 h-100"></textarea>
             </td>
             <td width="30" class="position-relative">
               <v-btn @click="DeleteRowBorrador(index)" position="absolute" color="error" density="compact"
@@ -99,20 +80,29 @@
 
   </v-form>
   <!-- //tabla -->
-  <pre>
-  {{ dataBorrador }}
-</pre>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useCuentasContablesStore } from '@/stores/cuentasContables/CuentasContables';
+import { useLibroDiarioStore } from '@/stores/libroDiario/LibroDiario';
 import { toast } from 'vue3-toastify';
+
+const storeLibroDiario = useLibroDiarioStore()
+
+//asignar asiento de forma manual
+const asignarAsientoManual = ref(false)
+
+const emit = defineEmits<{
+  // <eventName>: <expected arguments>
+  post: [value: boolean] // named tuple syntax
+}>()
 
 const rules = {
   required: (value: any) => !!value || 'Requerido',
   min: (v: string | any[]) => v.length >= 8 || 'Min 8 characters',
   min0_required: (v: any) => (v >= 0 && v !== "") || 'Campo obligatorio',
+  min1_required: (v: any) => (v > 0 && v !== "") || 'Campo obligatorio',
 }
 const headersBorrador = [
   'CuentaID',
@@ -131,6 +121,13 @@ const dataBorrador = ref([
     description: '',
 
   },
+  {
+    cuentaID: null,
+    debe: 0,
+    haber: 0,
+    description: '',
+
+  },
 ])
 
 
@@ -142,7 +139,6 @@ function addRowBorrador() {
     description: '',
   })
 }
-
 
 
 const resultadosDebe = computed(() => {
@@ -186,21 +182,14 @@ if (props.update) {
   tittleButton.value = 'Crear'
 }
 
-
-interface CreatedRowLibroDiario {
-  cuentaID: null;
-  debe: number;
-  haber: number;
-  description: string;
-}
-
-
-
-
-const isFormValid = ref(false)
 const onSubmit = async (event: any) => {
 
   const { valid, errors } = await event
+
+  if (dataBorrador.value.length < 2) {
+    toast.error("Por favor coloque 2 o mas registros en el asiento")
+    return
+  }
 
   if (!resultadosDebe.value.isFormValid) {
     toast.error(' Total Incorrecto:Verifique el debe y el haber')
@@ -208,6 +197,11 @@ const onSubmit = async (event: any) => {
   }
 
   if (valid) {
+    storeLibroDiario.asignarFormulario({
+      asiento: asignarAsientoManual.value === false ? undefined : asiento.value,
+      fechaMovimientoDesde: fechaMovimientoDesde.value,
+      createdRowLibroDiario: dataBorrador.value
+    })
     try {
       if (props.update) {
         //---actualizar
@@ -217,17 +211,14 @@ const onSubmit = async (event: any) => {
       } else {
         // storeLibroDiario.PostDataCuentas()
       }
-      const dataEnviar = {
-        asiento: asiento.value,
-        fechaMovimientoDesde: "2024-12-14T03:24:45.472Z",
-        createdRowLibroDiario: dataBorrador.value
-      }
 
-
-      toast.success('enviado')
+      storeLibroDiario.PostDataLibroDiario().then(() => {
+        toast.success('enviado')
+        emit('post', true)
+      })
 
     } catch (error) {
-      alert(error)
+      console.error(error)
 
     }
   } else if (!valid && errors) {
@@ -251,5 +242,11 @@ input[type=number]::-webkit-outer-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
   /* Cambia la apariencia a un campo de texto */
+}
+
+.centered-input-large input {
+  text-align: center !important;
+  font-size: large;
+  /* Center align the text */
 }
 </style>
