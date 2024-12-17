@@ -7,8 +7,8 @@
       </v-text-field>
     </template>
 
-    <v-data-table class="daTableBorder" :items="items" items-per-page="100" :headers="headers" density="compact"
-      :search="search">
+    <v-data-table :row-props="rowProws" class="daTableBorder" :items="items" items-per-page="100" :headers="headers"
+      density="compact" :search="search">
       <template v-slot:group-header="{ item, columns, toggleGroup, isGroupOpen }">
         <tr>
           <td :colspan="columns.length">
@@ -56,7 +56,8 @@
 </template>
 
 <script setup lang="ts">
-import type { ReadonlyHeaders, ReadonlyItems } from '@/interface/vuetify/dataTable';
+import type { ReadonlyHeaders, ReadonlyItems, ReadonlyRowProps } from '@/interface/vuetify/dataTable';
+import { formatDateString } from '@/utils/fechas/formatDateString';
 import type { TotalItemsSuma } from '@/views/admin/dashboard/reportes/LibroDiarioView.vue';
 import { ref } from 'vue';
 
@@ -66,6 +67,12 @@ const props = defineProps<{
   items: ReadonlyItems
   totalItemsSuma: TotalItemsSuma
 }>();
+function rowProws(item: any): ReadonlyRowProps {
+  if (item.item.asiento % 2 === 0) {
+    return { class: 'bg-blue-grey-lighten-4' }
+  }
+
+}
 
 const headers: ReadonlyHeaders = [
   {
@@ -83,11 +90,26 @@ const headers: ReadonlyHeaders = [
   {
     key: 'fecha',
     title: 'Fecha',
+    value: (item) => (formatDateString(item.fecha))
   },
   {
     key: 'cuentaId',
     title: 'Cuenta',
+    cellProps: (item) => {
+      if (!item.item.cuentaName) {
+        return {
+          class: 'bg-red-lighten-4',
+        }
+      } else {
+        return {
+          class: '',
+        }
+      }
+    },
     value(item) {
+      if (!item.cuentaName) {
+        return `el codigo ${item.cuentaId} no esta asociado`
+      }
       return item.cuentaName + `( ${item.cuentaId})`
     },
   },

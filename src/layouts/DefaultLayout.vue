@@ -32,7 +32,7 @@
               </VListItem>
             </v-list>
           </v-menu>
-          <VAvatar image="https://randomuser.me/api/portraits/med/women/12.jpg" size="38" />
+          <VAvatar image="/images/avatar.webp" size="38" />
         </VBtn>
       </VAppBar>
       <VMain>

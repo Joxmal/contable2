@@ -11,19 +11,26 @@
   </v-row>
 
 
-  <DialogGeneral color-btn="success" @close="update = false" ref="dialog"
+  <DialogGeneral color-btn="success" @close="update = false"
     :props_title-dialog="update ? 'Editar Cuenta' : 'Crear Cuenta'" props_open-btn="CREAR USANDO EXCEL">
     <template #contenido>
-      <DialogGeneral props_open-btn="EJEMPLO">
-        <template #contenido>
-          <VImg cover src="/images/examples/excelEjemploCuentasContables.webp" alt="Portada" class=" rounded-lg" />
-        </template>
-      </DialogGeneral>
+
+      <v-row style="margin: 0 auto;" width="200">
+        <DialogGeneral props_open-btn="EJEMPLO">
+          <template #contenido>
+            <VImg cover src="/images/examples/excelEjemploCuentasContables.webp" alt="Portada" class=" rounded-lg" />
+          </template>
+        </DialogGeneral>
+      </v-row>
+
       <ImportFileExcel @items-raw="obtenerItemsExcel" />
-      <TableDataGeneral :row-props="rowProws" table_title="Datos del del excel" v-if="itemsExcel.length > 0"
+      <TableDataGeneral :row-props="rowProws" table_title="Datos del excel" v-if="itemsExcel.length > 0"
         :table_items="itemsExcel" :table_headers="table_headers">
       </TableDataGeneral>
-      <VBtn @click="enviarDataExcel">ENVIAR </VBtn>
+
+      <v-row>
+        <VBtn color="success" style="margin: 0 auto;" width="200" @click="enviarDataExcel">ENVIAR </VBtn>
+      </v-row>
     </template>
   </DialogGeneral>
 
@@ -166,14 +173,18 @@ function validateRows({ rows }: { rows: any[] }) {
 
 }
 
-function enviarDataExcel() {
+async function enviarDataExcel() {
 
-  console.log(dataExcelEnviarBD.value)
-
-  dataExcelEnviarBD.value.forEach((element: any) => {
-    useCuentasContablesStore().PostDataCuentas({ reloadData: false, bodyManual: element })
+  // Usar map para crear un array de promesas
+  const promises = dataExcelEnviarBD.value.map(async (element: any) => {
+    return await useCuentasContablesStore().PostDataCuentas({ reloadData: false, bodyManual: element });
   });
-  useCuentasContablesStore().reload++
+
+  // Esperar a que todas las promesas se resuelvan
+  await Promise.all(promises);
+
+  // Incrementar el contador después de que todas las promesas se hayan completado
+  useCuentasContablesStore().reload++;
 
 }
 //----------------------------------------------------------

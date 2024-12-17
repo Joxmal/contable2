@@ -99,7 +99,6 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
   //-----obtener las cuentas contables hijas de los tipos principales
   async function fetchDataCuentas() {
     const { data, error } = await AxiosService.get<CuentaContables[]>('/cuentas-contables')
-    console.log('data', data)
     if (error) {
       toast.error('error')
       throw new Error()
@@ -110,7 +109,7 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
 
   async function PostDataCuentas({
     reloadData = true,
-    bodyManual,
+    bodyManual = false,
   }: {
     reloadData?: boolean
     bodyManual?: any
@@ -118,8 +117,9 @@ export const useCuentasContablesStore = defineStore('cuentasContables', () => {
     let body
     if (!bodyManual) {
       body = { ...formCreateCuentasContables.value }
+    } else {
+      body = bodyManual
     }
-    body = bodyManual
 
     try {
       await AxiosService.post('/cuentas-contables', body)

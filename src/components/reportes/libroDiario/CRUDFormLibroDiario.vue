@@ -10,7 +10,12 @@
           :rules="!asignarAsientoManual ? [] : [rules.min1_required]" label="ASIENTO N°" type="number">
         </v-text-field>
       </v-col>
+      <v-col align="center" cols="12">
+        <input type="date" v-model="fechaAsiento" />
+      </v-col>
     </v-row>
+
+    <!-- v-model="fechaBusqueda" @change="guardarFechaParaBuscar" -->
 
     <v-divider></v-divider>
     <v-card title="Tabla a insertar" class="mb-2">
@@ -87,6 +92,9 @@ import { computed, ref } from 'vue';
 import { useCuentasContablesStore } from '@/stores/cuentasContables/CuentasContables';
 import { useLibroDiarioStore } from '@/stores/libroDiario/LibroDiario';
 import { toast } from 'vue3-toastify';
+import { FechatoISOString } from '@/utils/fechas/toISOString';
+
+
 
 const storeLibroDiario = useLibroDiarioStore()
 
@@ -111,7 +119,7 @@ const headersBorrador = [
   'Descripción',
   'Acciones'
 ]
-const fechaMovimientoDesde = ref("2024-12-14T03:24:45.472Z")
+const fechaAsiento = ref('')
 const asiento = ref<number>(0)
 const dataBorrador = ref([
   {
@@ -129,6 +137,7 @@ const dataBorrador = ref([
 
   },
 ])
+
 
 
 function addRowBorrador() {
@@ -196,10 +205,15 @@ const onSubmit = async (event: any) => {
     return
   }
 
+  if (!fechaAsiento.value) {
+    toast.error('coloque una fecha para el asiento')
+    return
+  }
+
   if (valid) {
     storeLibroDiario.asignarFormulario({
       asiento: asignarAsientoManual.value === false ? undefined : asiento.value,
-      fechaMovimientoDesde: fechaMovimientoDesde.value,
+      fechaMovimientoDesde: FechatoISOString({ fecha: fechaAsiento.value, hora: '8am' }),
       createdRowLibroDiario: dataBorrador.value
     })
     try {
@@ -215,6 +229,9 @@ const onSubmit = async (event: any) => {
       storeLibroDiario.PostDataLibroDiario().then(() => {
         toast.success('enviado')
         emit('post', true)
+      }).catch((error: any) => {
+        toast.error(error)
+
       })
 
     } catch (error) {

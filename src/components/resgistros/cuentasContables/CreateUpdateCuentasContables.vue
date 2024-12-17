@@ -96,7 +96,8 @@ const onSubmit = handleSubmit(async () => {
       storeCuentasContables.patchDataCuentas(props.updateId).then(() => emit('post', true))
     }
   } else {
-    storeCuentasContables.PostDataCuentas().then(() => emit('post', true))
+
+    storeCuentasContables.PostDataCuentas({}).then(() => emit('post', true))
   }
   // Aquí puedes usar localValues para enviar tus datos
 })

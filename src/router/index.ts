@@ -50,6 +50,11 @@ const router = createRouter({
               name: 'DasboardReportesLibroDiario',
               component: () => import('../views/admin/dashboard/reportes/LibroDiarioView.vue'),
             },
+            {
+              path: 'libroMayor',
+              name: 'DasboardReportesLibroMayor',
+              component: () => import('../views/admin/dashboard/reportes/LibroMayorView.vue'),
+            },
           ],
         },
       ],

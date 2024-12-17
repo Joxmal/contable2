@@ -5,9 +5,12 @@
   <pre>
     {{ usePersistedStore().$state }}
   </pre>
+
+  <FechaInput />
 </template>
 
 <script setup lang="ts">
+import FechaInput from '@/components/test/FechaInput.vue';
 import { usePersistedStore } from '@/stores/persisted';
 import { ref } from 'vue';
 import { onMounted } from 'vue';

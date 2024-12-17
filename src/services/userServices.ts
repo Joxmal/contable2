@@ -18,7 +18,7 @@ class AxiosService {
     const config: AxiosRequestConfig = {
       url: `${this.baseURL}${endpoint}`,
       method,
-      data,
+      ...(method === 'GET' ? { params: data } : { data }), // Condicionalmente asignar params o data
     }
 
     if (this.token) {
@@ -32,7 +32,10 @@ class AxiosService {
 
   async get<T>(endpoint: string, params?: any) {
     const { exec, response, error } = useAxios<T>()
-    await exec(this.createConfig(endpoint, 'GET', { params }))
+    console.log(params)
+    const getData = await exec(this.createConfig(endpoint, 'GET', params))
+    console.log(getData)
+
     return { data: response.value as T, error: error.value }
   }
 

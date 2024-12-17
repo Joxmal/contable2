@@ -35,6 +35,12 @@ export const useLibroDiarioStore = defineStore('LibroDiario', () => {
   //cuenta cuando se hace un post o un update
   const reload = ref(0)
 
+  const vDateInput = ref<string[]>()
+  const params = ref({
+    fechaMovimientoDesde: undefined as undefined | string,
+    fechaMovimientoHasta: undefined as undefined | string,
+  })
+
   // formulario para crear
   const formCreateLibroDiario = ref({}) as Ref<FormCreateLibroDiario>
 
@@ -52,9 +58,12 @@ export const useLibroDiarioStore = defineStore('LibroDiario', () => {
 
   //-----obtener tipos principales de las cuentas contables
   async function getLibroDiario() {
+    const param = {
+      fechaMovimientoDesde: params.value.fechaMovimientoDesde || undefined,
+      fechaMovimientoHasta: params.value.fechaMovimientoHasta || undefined,
+    }
     try {
-      const { data } = await AxiosService.get<GetDataLibroDiario[]>('/libro-diario')
-      console.log(data)
+      const { data } = await AxiosService.get<GetDataLibroDiario[]>('/libro-diario', param)
       dataLibroDiario.value = data
     } catch (error) {
       console.error(error)
@@ -69,8 +78,7 @@ export const useLibroDiarioStore = defineStore('LibroDiario', () => {
       await AxiosService.post('/libro-diario', body)
       reload.value++
     } catch (error: any) {
-      console.error(error.response.data.message)
-      throw new Error()
+      throw new Error(error.response.data.message)
     }
   }
 
@@ -80,5 +88,7 @@ export const useLibroDiarioStore = defineStore('LibroDiario', () => {
     asignarFormulario,
     reload,
     dataLibroDiario,
+    params,
+    vDateInput,
   }
 })

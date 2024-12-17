@@ -1,5 +1,6 @@
 <template>
 
+
   <v-row class="pb-2">
     <v-col>
       <DialogGeneral :closed-number-dialog="closedNumberDialog" persistent @close="update = false" ref="dialog"
@@ -11,25 +12,38 @@
     </v-col>
   </v-row>
 
-  <TableDataLibroDiario :items="items" :totalItemsSuma="totalItemsSuma" />
+  <v-divider :thickness="5" />
 
-  <hr>
-  <ImportFileExcel></ImportFileExcel>
+  <v-card>
+    <template #title>
+      <div class="d-flex ga-2 flex-column justify-center align-center">
 
+        <v-date-input clearable width="300" v-model="storeLibroDiario.vDateInput"
+          @update:model-value="asignarTimeStorage" density="compact" variant="solo" prepend-icon=""
+          prepend-inner-icon="$calendar" label="Seleccionar Rango de Fechas" multiple="range" hide-details
+          @click:clear="clearVDateInput">
+        </v-date-input>
+        <VBtn @click="reloadLibroDiario++" color="primary">Buscar</VBtn>
+      </div>
 
+    </template>
+    <!-- buscador por fecha -->
+    <TableDataLibroDiario :items="items" :totalItemsSuma="totalItemsSuma" />
+  </v-card>
 
 </template>
 
 <script setup lang="ts">
+import { VDateInput } from 'vuetify/labs/VDateInput'
 import DialogGeneral from '@/components/dialog/DialogGeneral.vue';
 import CRUDFormLibroDiario from '@/components/reportes/libroDiario/CRUDFormLibroDiario.vue';
 import TableDataLibroDiario from '@/components/TableData/TableDataLibroDiario.vue';
-import ImportFileExcel from '@/composables/test/ImportFileExcel.vue';
 
-import { useCuentasContablesStore } from '@/stores/cuentasContables/CuentasContables';
 import { useLibroDiarioStore, type GetDataLibroDiario } from '@/stores/libroDiario/LibroDiario';
+import { useCuentasContablesStore } from '@/stores/cuentasContables/CuentasContables';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted, ref, watch } from 'vue';
+import { FechatoISOString } from '@/utils/fechas/toISOString';
 const storeCuentasContables = useCuentasContablesStore()
 const storeLibroDiario = useLibroDiarioStore()
 
@@ -78,7 +92,6 @@ const totalItemsSuma = computed((): TotalItemsSuma => {
     }
   }
   const data = items.value.reduce((acc, values) => {
-    console.log(typeof values.debe)
 
     return {
       debe: acc.debe + values.debe,
@@ -105,6 +118,26 @@ function asignarItems() {
   items.value = itemsRaw
 }
 
+function clearVDateInput() {
+  storeLibroDiario.vDateInput = undefined
+  storeLibroDiario.params.fechaMovimientoDesde = undefined
 
+  storeLibroDiario.params.fechaMovimientoHasta = undefined
+}
 
+function asignarTimeStorage() {
+  if (!storeLibroDiario.vDateInput) {
+    return
+  }
+  storeLibroDiario.params.fechaMovimientoDesde = storeLibroDiario.vDateInput[0] || undefined
+
+  if (storeLibroDiario.vDateInput.length === 1) {
+    storeLibroDiario.params.fechaMovimientoHasta = FechatoISOString({ fecha: storeLibroDiario.vDateInput[0], hora: '12am' })
+  } else {
+    storeLibroDiario.params.fechaMovimientoHasta = storeLibroDiario.vDateInput[storeLibroDiario.vDateInput.length - 1]
+  }
+
+  console.log(storeLibroDiario.vDateInput)
+  console.log(storeLibroDiario.params)
+}
 </script>

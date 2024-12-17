@@ -105,6 +105,7 @@ const menu = [
       // { title: "Balance General", to: "", name: 'DasboardCuentasContables' },
       // { title: "Balance de Comprobración", to: "", name: 'DasboardCuentasContables' },
       { title: "Libro Diario", name: 'DasboardReportesLibroDiario' },
+      { title: "Libro Mayor", name: 'DasboardReportesLibroMayor' },
       // { title: "Ganancia o Pérdida Cambiaria", to: "", name: 'DasboardCuentasContables' },
     ],
   },
