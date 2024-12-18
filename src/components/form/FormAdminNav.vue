@@ -62,6 +62,37 @@
         </template>
         <VListItemTitle v-text="'cambiar tema'" class="text-body-2 font-weight-regular" />
       </VListItem>
+
+      <!-- //solo para los root--------------------------------------- -->
+
+      <template v-if="usePersistedStore().authSession?.user.rolePrimary === 'root'">
+        <template v-for="(m, i) in menuRoot" :key="`${i}-${m}`">
+          <!-- añadir en el comparador || los que no quiero mostrar al los role users -->
+          <VListGroup :value="m.title"
+            v-if="m.items && !((m.title === 'Registros' || m.title === 'Administrar') && usePersistedStore().authSession?.user?.rolePrimary === 'Super Usuario')">
+            <template #activator="{ props }">
+              <VListItem v-bind="props" density="comfortable">
+                <template #prepend>
+                  <VIcon size="22" :icon="m.icon" class="mr-4" />
+                </template>
+                <VListItemTitle v-text="m.title" class="text-body-2 font-weight-regular" />
+              </VListItem>
+            </template>
+
+            <div class="border-s ml-5">
+              <template v-for="(child, index) in m.items" :key="`${index}+${child.title}`">
+                <VListItem :active="activeItem === child.name" @click="toView(child.name)" class="rounded-0"
+                  style="padding-inline-start: 26px !important" link color="primary" density="compact" :toView="''">
+                  <VListItemTitle v-text="child.title" class="text-body-2 font-weight-regular" />
+                </VListItem>
+              </template>
+            </div>
+          </VListGroup>
+        </template>
+      </template>
+
+
+      <!-- //--------------------------- -->
     </VList>
   </VNavigationDrawer>
 </template>
@@ -93,25 +124,29 @@ const menu = [
     icon: "solar:box-line-duotone",
     items: [
       { title: "Cuentas Contables", name: 'DasboardCuentasContables' },
-      // { title: "Auxiliares(Etiquetas)", to: "", name: 'DasboardCuentasContables' },
-      // { title: "Periodos Contables", to: "/admin/dashboard/gestion/banca", name: 'DasboardCuentasContables' },
     ],
   },
   {
     title: "Reportes",
     icon: "wpf:statistics",
     items: [
-      // { title: "Estado de Resultados", to: "", name: 'DasboardCuentasContables' },
-      // { title: "Balance General", to: "", name: 'DasboardCuentasContables' },
-      // { title: "Balance de Comprobración", to: "", name: 'DasboardCuentasContables' },
       { title: "Libro Diario", name: 'DasboardReportesLibroDiario' },
       { title: "Libro Mayor", name: 'DasboardReportesLibroMayor' },
-      // { title: "Ganancia o Pérdida Cambiaria", to: "", name: 'DasboardCuentasContables' },
     ],
   },
 
   { title: "Configuración", icon: "solar:settings-line-duotone" },
 ];
+
+const menuRoot = [
+  {
+    title: "ROOT",
+    icon: "dashicons:admin-network",
+    items: [
+      { title: "PANEL", name: 'DasboardRootPanel' },
+    ],
+  },
+]
 
 const themeSelect = localStorage.getItem("grow-theme")
 

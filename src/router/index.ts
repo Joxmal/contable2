@@ -57,6 +57,19 @@ const router = createRouter({
             },
           ],
         },
+
+        {
+          path: 'root',
+          name: 'rootView',
+          component: () => import('../views/admin/dashboard/root/IndexView.vue'),
+          children: [
+            {
+              path: 'rootPanel',
+              name: 'DasboardRootPanel',
+              component: () => import('../views/admin/dashboard/root/PanelView.vue.vue'),
+            },
+          ],
+        },
       ],
       meta: {
         layout: 'DefaultLayout',

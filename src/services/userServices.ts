@@ -32,9 +32,7 @@ class AxiosService {
 
   async get<T>(endpoint: string, params?: any) {
     const { exec, response, error } = useAxios<T>()
-    console.log(params)
     const getData = await exec(this.createConfig(endpoint, 'GET', params))
-    console.log(getData)
 
     return { data: response.value as T, error: error.value }
   }
