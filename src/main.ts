@@ -9,12 +9,13 @@ import { createVuetify } from 'vuetify' // Importar Vuetify
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
+//apexcharts
+import VueApexCharts from 'vue3-apexcharts'
+
 import './assets/main.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-const pinia = createPinia()
-pinia.use(piniaPluginPersistedstate)
 
 import App from './App.vue'
 import router from './router'
@@ -22,6 +23,10 @@ import router from './router'
 //Vue3Toastify
 import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
+
+//----pinia
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
 // Función para crear un conjunto de iconos utilizando Iconify
 /* const iconify = (set: string) => ({
@@ -168,4 +173,5 @@ app.use(Vue3Toastify, {
 app.use(pinia)
 app.use(router)
 app.use(vuetify)
+app.use(VueApexCharts)
 app.mount('#app')

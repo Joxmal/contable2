@@ -144,6 +144,7 @@ const menuRoot = [
     icon: "dashicons:admin-network",
     items: [
       { title: "PANEL", name: 'DasboardRootPanel' },
+      { title: "COMPAÑIAS", name: 'DasboardRootCompany' },
     ],
   },
 ]

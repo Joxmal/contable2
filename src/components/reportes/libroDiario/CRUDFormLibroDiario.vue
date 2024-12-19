@@ -93,6 +93,7 @@ import { useCuentasContablesStore } from '@/stores/cuentasContables/CuentasConta
 import { useLibroDiarioStore } from '@/stores/libroDiario/LibroDiario';
 import { toast } from 'vue3-toastify';
 import { FechatoISOString } from '@/utils/fechas/toISOString';
+import { rules } from '@/utils/rulesVuetify';
 
 
 
@@ -105,13 +106,6 @@ const emit = defineEmits<{
   // <eventName>: <expected arguments>
   post: [value: boolean] // named tuple syntax
 }>()
-
-const rules = {
-  required: (value: any) => !!value || 'Requerido',
-  min: (v: string | any[]) => v.length >= 8 || 'Min 8 characters',
-  min0_required: (v: any) => (v >= 0 && v !== "") || 'Campo obligatorio',
-  min1_required: (v: any) => (v > 0 && v !== "") || 'Campo obligatorio',
-}
 const headersBorrador = [
   'CuentaID',
   'Debe',
@@ -254,11 +248,6 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-
-input[type=number] {
-  -moz-appearance: textfield;
-  /* Cambia la apariencia a un campo de texto */
 }
 
 .centered-input-large input {

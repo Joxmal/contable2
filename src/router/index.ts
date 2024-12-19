@@ -68,6 +68,11 @@ const router = createRouter({
               name: 'DasboardRootPanel',
               component: () => import('../views/admin/dashboard/root/PanelView.vue.vue'),
             },
+            {
+              path: 'rootCompany',
+              name: 'DasboardRootCompany',
+              component: () => import('../views/admin/dashboard/root/CompanyView.vue'),
+            },
           ],
         },
       ],
