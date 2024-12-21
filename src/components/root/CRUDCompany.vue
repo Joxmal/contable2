@@ -13,25 +13,51 @@
             v-model="nameCompany.value.value" />
         </v-col>
 
+        <v-col>
+          <v-select :disabled="update" :items="dataPlanesDB" variant="filled" density="compact" label="Plan de permisos"
+            v-model="planCompanyId.value.value" item-title="nombre" item-value="id">
+          </v-select>
+        </v-col>
+
         <v-col md="12" cols="12">
           <v-textarea rows="1" density="compact" label="Descripsion" :error-messages="errors.description"
             v-model="description.value.value"></v-textarea>
         </v-col>
       </v-row>
+
     </v-card>
 
     <v-card elevation="10" class="py-4 px-2" title="Usuario Administrador de la compañia">
       <v-row>
+        <!-- Nombre del usuario para acceder -->
         <v-col md="6" cols="12">
           <v-text-field density="compact" label="Nombre de usuario" :error-messages="errors.username"
-            v-model="username.value.value" />
+            v-model="username.value.value" persistent-hint hint="Dato requerido para acceer" />
         </v-col>
 
+        <!-- Contraseña del usuario para acceder -->
         <v-col md="6" cols="12">
           <v-text-field density="compact" label="Contraseña" :error-messages="errors.password"
             v-model="password.value.value" />
         </v-col>
       </v-row>
+
+      <v-divider> </v-divider>
+      <span class="pl-2">Datos del usuario </span>
+      <v-row>
+        <!-- primer nombre del usuario -->
+        <v-col md="6" cols="12">
+          <v-text-field density="compact" label="Primer nombre" :error-messages="errors.first_name"
+            v-model="first_name.value.value" />
+        </v-col>
+
+        <!-- segundo nombre del usuario -->
+        <v-col md="6" cols="12">
+          <v-text-field density="compact" label="Segundo nombre" :error-messages="errors.second_name"
+            v-model="second_name.value.value" />
+        </v-col>
+      </v-row>
+
     </v-card>
 
 
@@ -48,11 +74,13 @@ import { ref } from 'vue';
 import AxiosService from '@/services/userServices'
 import { toast } from 'vue3-toastify';
 import { Role } from '@/interface/roles';
+import type { GetPlanes } from '@/stores/root/rootPlanes';
 
 
 interface Props {
   updateId?: number
   update?: boolean
+  dataPlanesDB: GetPlanes[] | undefined
 }
 const props = defineProps<Props>();
 
@@ -74,7 +102,10 @@ interface Form {
   nameCompany: string;
   description: string;
   username: string;
+  first_name: string;
+  second_name: string;
   password: string;
+  planCompanyId: number
 }
 
 
@@ -93,6 +124,9 @@ const validationSchema = yup.object().shape({
   authKeyCompany: yup.string().min(8, 'minimo de 8 letras').required('Se requiere una llave identificadora').matches(/^\S*$/, 'No se permiten espacios en blanco'),
   nameCompany: yup.string().required('Nombre de la compañia requerido').typeError('El campo debe ser un texto'),
   description: yup.string().optional(),
+  planCompanyId: yup.number().required('Plan de permisos requerido').typeError('Plan de permisos requerido'),
+  first_name: yup.string().required('Dato requerido'),
+  second_name: yup.string().required('Dato requerido'),
 })
 
 const { handleSubmit, errors, values } = useForm<Form>({
@@ -105,22 +139,28 @@ const description = useField<string>('description', validationSchema)
 const username = useField<string>('username', validationSchema)
 const password = useField<string>('password', validationSchema)
 
+const first_name = useField<string>('first_name', validationSchema)
+const second_name = useField<string>('second_name', validationSchema)
+
+const planCompanyId = useField<number>('planCompanyId', validationSchema)
+
 const onSubmit = handleSubmit(async () => {
-
-
 
   try {
     const { data }: { data: GetCompany } = await AxiosService.post<GetCompany>('/company', {
       authKeyCompany: values.authKeyCompany,
+      planCompanyId: values.planCompanyId,
       data_company: {
         nameCompany: values.nameCompany,
         description: values.description
       }
     })
     await AxiosService.post('/user', {
+      first_name: values.first_name,
+      second_name: values.second_name,
       companyId: data.id,
-      userName: values.authKeyCompany,
-      password: values.authKeyCompany,
+      userName: values.username,
+      password: values.password,
       rolePrimary: Role.SUPERADMIN
     })
 

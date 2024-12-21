@@ -57,7 +57,6 @@ const router = createRouter({
             },
           ],
         },
-
         {
           path: 'root',
           name: 'rootView',
@@ -72,6 +71,12 @@ const router = createRouter({
               path: 'rootCompany',
               name: 'DasboardRootCompany',
               component: () => import('../views/admin/dashboard/root/CompanyView.vue'),
+            },
+
+            {
+              path: 'rootPlanes',
+              name: 'DasboardRootPlanes',
+              component: () => import('../views/admin/dashboard/root/PlanesView.vue'),
             },
           ],
         },
@@ -93,5 +98,5 @@ const router = createRouter({
 router.beforeEach(loadLayoutMiddleware)
 
 // Middleware global para manejar la autenticación
-router.beforeEach(authMiddleware)
+// router.beforeEach(authMiddleware)
 export default router

@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto" title="Empresas creadas">
+  <v-card class="mx-auto" title="Compañias creadas">
     <template v-slot:prepend>
       <v-avatar color="blue-darken-2">
         <v-icon icon="mdi-domain"></v-icon>
@@ -60,11 +60,14 @@
     </v-card>
 
   </v-card>
-  <v-card max-width="500" class="mx-auto">
-    <template v-if="dataCompanySelectChartPie">
-      <apexchart max-width="500" type="donut" :options="dataCompanySelectChartPie?.options"
-        :series="dataCompanySelectChartPie?.series"></apexchart>
-    </template>
+  <v-card class="mx-auto">
+    <div class="d-flex ga-2 flex-wrap">
+      <template v-if="dataCompanySelectChartPie">
+        <apexchart type="donut" :options="dataCompanySelectChartPie?.options"
+          :series="dataCompanySelectChartPie?.series"></apexchart>
+      </template>
+
+    </div>
   </v-card>
 
 </template>
@@ -88,6 +91,7 @@ const dataCompanySelectChartPie = computed(() => {
     return null
   }
 
+  console.log(selectCOmpany.value)
   const nameRoles = selectCOmpany.value.roles.map((role) => role.name)
   const cantidadDeUsuarioPorRole = selectCOmpany.value.roles.map(role => role.auth_users.map(value => value).length)
 
@@ -107,7 +111,7 @@ const dataCompanySelectChartPie = computed(() => {
         breakpoint: 480,
         options: {
           chart: {
-            width: 200
+            width: 180
           },
           legend: {
             position: 'bottom'
