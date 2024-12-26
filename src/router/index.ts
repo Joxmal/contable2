@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import NotFoundView from '@/views/NotFoundView.vue'
 import { loadLayoutMiddleware } from './middleware/loadLayoutMiddleware'
 import LoginView from '@/views/LoginView.vue'
-import authMiddleware from './middleware/authMiddleware'
+// import authMiddleware from './middleware/authMiddleware'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,11 +21,26 @@ const router = createRouter({
       name: 'dashboardView',
       component: () => import('../views/admin/dashboard/IndexView.vue'),
       children: [
+        //panel principal (todos lo ven)
         {
           path: 'panel',
           name: 'DasboardPanelView',
           component: () => import('../views/admin/dashboard/PanelView.vue'),
         },
+        //panel de control de la empresa
+        {
+          path: 'panelControl',
+          name: 'panelControlView',
+          component: () => import('../views/admin/dashboard/panel-control/RouterView.vue'),
+          children: [
+            {
+              path: 'canelControlUsuarios',
+              name: 'DasboardPanelUsuarios',
+              component: () => import('../views/admin/dashboard/panel-control/UsuariosView.vue'),
+            },
+          ],
+        },
+        //registro
         {
           path: 'registro',
           name: 'registrosView',
@@ -39,7 +54,7 @@ const router = createRouter({
             },
           ],
         },
-
+        //reportes
         {
           path: 'reportes',
           name: 'reportesView',
@@ -57,6 +72,7 @@ const router = createRouter({
             },
           ],
         },
+        //root
         {
           path: 'root',
           name: 'rootView',
@@ -65,14 +81,8 @@ const router = createRouter({
             {
               path: 'rootPanel',
               name: 'DasboardRootPanel',
-              component: () => import('../views/admin/dashboard/root/PanelView.vue.vue'),
+              component: () => import('../views/admin/dashboard/root/PanelRootView.vue.vue'),
             },
-            {
-              path: 'rootCompany',
-              name: 'DasboardRootCompany',
-              component: () => import('../views/admin/dashboard/root/CompanyView.vue'),
-            },
-
             {
               path: 'rootPlanes',
               name: 'DasboardRootPlanes',

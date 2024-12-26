@@ -1,11 +1,11 @@
 <template>
   <v-form @submit.prevent="onSubmit">
 
-    <div style="position: absolute; margin-top: 0; margin-right: 0;">
+    <div class="d-none" style="position: absolute; margin-top: 0; margin-right: 0;">
       <v-checkbox hide-details density="compact" label="Asiento Manual" v-model="asignarAsientoManual"></v-checkbox>
     </div>
     <v-row align="center" justify="center">
-      <v-col cols="6" md="2">
+      <v-col class="d-none" cols="6" md="2">
         <v-text-field :disabled="!asignarAsientoManual" v-model="asiento" class="centered-input-large" variant="filled"
           :rules="!asignarAsientoManual ? [] : [rules.min1_required]" label="ASIENTO N°" type="number">
         </v-text-field>

@@ -30,7 +30,7 @@ const emit = defineEmits<{
   date: [value: DateInput] // named tuple syntax
 }>()
 
-interface DateInput {
+export interface DateInput {
   raw: undefined | string[],
   desde: undefined | string,
   hasta: undefined | string

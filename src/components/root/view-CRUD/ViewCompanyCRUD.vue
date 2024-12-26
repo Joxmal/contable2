@@ -5,7 +5,7 @@
       <DialogGeneral :closed-number-dialog="closedNumberDialog" ref="dialog"
         :props_title-dialog="update ? 'Editar Compañia' : 'Crear Compañia'" props_open-btn="CREAR COMPAÑIA">
         <template #contenido>
-          <CRUDCompany :data-planes-d-b="getPlanesCompany" />
+          <CRUDCompany @created="CreatedCompany" :data-planes-d-b="getPlanesCompany" />
         </template>
       </DialogGeneral>
     </v-col>
@@ -20,10 +20,18 @@ import { useRootPlanesStore, type GetPlanes } from '@/stores/root/rootPlanes';
 const storePlanes = useRootPlanesStore()
 
 
-
-
 const closedNumberDialog = ref(0)
 const getPlanesCompany = ref<GetPlanes[]>()
+
+
+const emit = defineEmits<{
+  // <eventName>: <expected arguments>
+  reload: [value: boolean] // named tuple syntax
+}>()
+
+function CreatedCompany() {
+  emit('reload', true)
+}
 
 onMounted(async () => {
   await storePlanes.getPlanes()

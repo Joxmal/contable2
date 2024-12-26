@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import AxiosService from '@/services/userServices'
+import type { DateInput } from '@/components/test/FechaInput.vue'
 // import { toast } from 'vue3-toastify'
 
 export interface GetDataDB {
@@ -11,17 +12,19 @@ export interface GetDataDB {
 interface CuentasID {
   cuentaID: number
   cuentaName: string
+  naturaleza: boolean
   data: Datum[]
-  debe: number
-  haber: number
+  debe: string
+  haber: string
+  totalNeto: string // si es negativo esta incorrecta la cuenta
 }
 
 interface Datum {
   asiento: number
   fecha: Date
   descripcion: string
-  debe: number
-  haber: number
+  debe: string
+  haber: string
 }
 
 export const useLibroMayorStore = defineStore('LibroMayor', () => {
@@ -30,10 +33,12 @@ export const useLibroMayorStore = defineStore('LibroMayor', () => {
   const getDataDB = ref<GetDataDB>()
 
   //-----obtener tipos principales de las cuentas contables
-  async function getLibroMayor() {
+  async function getLibroMayor(date?: DateInput) {
     try {
-      const { data } = await AxiosService.get<GetDataDB>('/libro-mayor')
-      console.log(data)
+      const { data } = await AxiosService.get<GetDataDB>('/libro-mayor', {
+        fechaMovimientoDesde: date ? date.desde : undefined,
+        fechaMovimientoHasta: date ? date.hasta : undefined,
+      })
       getDataDB.value = data
     } catch (error) {
       console.error(error)

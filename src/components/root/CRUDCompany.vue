@@ -8,6 +8,11 @@
             @click:append-inner="asignarUUID" />
         </v-col>
 
+        <v-col cols="12">
+          <v-text-field counter="10" type="number" density="compact" label="LLave perteneciente al sistema FoxPro"
+            :error-messages="errors.authKeySystemFoxPro" v-model="authKeySystemFoxPro.value.value" />
+        </v-col>
+
         <v-col md="12" cols="12">
           <v-text-field density="compact" label="Nombre de la Compañia" :error-messages="errors.nameCompany"
             v-model="nameCompany.value.value" />
@@ -98,6 +103,7 @@ if (props.update) {
 }
 
 interface Form {
+  authKeySystemFoxPro: number,
   authKeyCompany: string;
   nameCompany: string;
   description: string;
@@ -110,6 +116,7 @@ interface Form {
 
 
 export interface GetCompany {
+  authKeySystemFoxPro: number | null,
   id: number;
   authKeyCompany: string;
   createdAt: Date;
@@ -125,6 +132,11 @@ const validationSchema = yup.object().shape({
   nameCompany: yup.string().required('Nombre de la compañia requerido').typeError('El campo debe ser un texto'),
   description: yup.string().optional(),
   planCompanyId: yup.number().required('Plan de permisos requerido').typeError('Plan de permisos requerido'),
+  authKeySystemFoxPro: yup.number().optional().typeError('Debe ser un numero').test(
+    'len',
+    'El número debe tener un máximo de 10 dígitos',
+    val => val === undefined || (Number.isInteger(val) && val >= 0 && val <= 2147483647) // Comprobación para números enteros de hasta 10 dígitos
+  ),
   first_name: yup.string().required('Dato requerido'),
   second_name: yup.string().required('Dato requerido'),
 })
@@ -134,6 +146,7 @@ const { handleSubmit, errors, values } = useForm<Form>({
 });
 
 const authKeyCompany = useField<string>('authKeyCompany', validationSchema)
+const authKeySystemFoxPro = useField<number>('authKeySystemFoxPro', validationSchema)
 const nameCompany = useField<string>('nameCompany', validationSchema)
 const description = useField<string>('description', validationSchema)
 const username = useField<string>('username', validationSchema)
@@ -148,6 +161,7 @@ const onSubmit = handleSubmit(async () => {
 
   try {
     const { data }: { data: GetCompany } = await AxiosService.post<GetCompany>('/company', {
+      authKeySystemFoxPro: values.authKeySystemFoxPro || undefined,
       authKeyCompany: values.authKeyCompany,
       planCompanyId: values.planCompanyId,
       data_company: {
@@ -166,6 +180,7 @@ const onSubmit = handleSubmit(async () => {
 
     console.log(data)
     toast.success('Compañia Creada')
+    emit('created', true)
   } catch (error: any) {
     toast.error(`Error: ${error.response.data.message}`)
     console.error(error)
@@ -173,7 +188,6 @@ const onSubmit = handleSubmit(async () => {
   }
 
 
-  emit('created', true)
 })
 
 function asignarUUID() {

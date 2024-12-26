@@ -1,16 +1,17 @@
-export interface GetCompanyDB {
+export interface GetONECompanyUser {
   id: number
+  groups_company_planId: number
   authKeyCompany: string
-  authKeySystemFoxPro: number | null
+  authKeySystemFoxPro: number
   createdAt: Date
   updatedAt: Date
   is_active: boolean
   _count: Count
-  groups_company_plan: null
-  data_company: null
+  groups_company_plan: GroupsCompanyPlan
+  data_company: DataCompany
   auth_users: AuthUser[]
   admin_logs: any[]
-  roles: Role[]
+  roles: any[]
 }
 
 interface Count {
@@ -19,23 +20,26 @@ interface Count {
   Libro_Diario: number
   admin_logs: number
   Cuenta_contables: number
+  Cierre_Anual: number
 }
 
-interface AuthUser {
+export interface AuthUser {
   id: number
   username: string
   password: string
   description: string
   email: null
+  createCompanyPermission: boolean
   first_name: string
   second_name: string
   companyId: number
+  roleId: null
   primaryRole: string
-  role: RoleAuthUser | null
   last_login: null
   createdAt: Date
   updatedAt: Date
   is_active: boolean
+  role: null | RoleAuthUser
 }
 
 export interface RoleAuthUser {
@@ -49,15 +53,18 @@ export interface RoleAuthUser {
   companyId: number
 }
 
-interface Role {
+interface DataCompany {
   id: number
-  name: string
+  nameCompany: string
+  description: string
+  companyId: number
+}
+
+interface GroupsCompanyPlan {
+  id: number
+  nombre: string
   description: string
   permissionsId: number
-  auth_users: AuthUser[]
-  auth_usersId: number
   createdAt: Date
   updatedAt: Date
-  is_active: boolean
-  companyId: number
 }

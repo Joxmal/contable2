@@ -30,6 +30,9 @@
     <!-- buscador por fecha -->
     <TableDataLibroDiario :items="items" :totalItemsSuma="totalItemsSuma" />
   </v-card>
+  <pre>
+  {{ totalItemsSuma }}
+</pre>
 
 </template>
 
@@ -91,11 +94,12 @@ const totalItemsSuma = computed((): TotalItemsSuma => {
       isValid: false
     }
   }
+  console.log(items.value)
   const data = items.value.reduce((acc, values) => {
 
     return {
-      debe: acc.debe + values.debe,
-      haber: acc.haber + values.haber,
+      debe: +acc.debe + +values.debe,
+      haber: +acc.haber + +values.haber,
     }
   }, { debe: 0, haber: 0 })
 

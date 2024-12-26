@@ -35,7 +35,7 @@
 
         <!-- añadir en el comparador || los que no quiero mostrar al los role users -->
         <VListGroup :value="m.title"
-          v-if="m.items && !((m.title === 'Registros' || m.title === 'Administrar') && usePersistedStore().authSession?.user?.rolePrimary === 'Super Usuario')">
+          v-if="m.items && !(m.title === 'Panel-Control' && !(usePersistedStore().authSession?.user?.rolePrimary === 'superAdmin' || usePersistedStore().authSession?.user?.rolePrimary === 'root'))">
           <template #activator="{ props }">
             <VListItem v-bind="props" density="comfortable">
               <template #prepend>
@@ -64,7 +64,6 @@
       </VListItem>
 
       <!-- //solo para los root--------------------------------------- -->
-
       <template v-if="usePersistedStore().authSession?.user.rolePrimary === 'root'">
         <template v-for="(m, i) in menuRoot" :key="`${i}-${m}`">
           <!-- añadir en el comparador || los que no quiero mostrar al los role users -->
@@ -118,7 +117,14 @@ const toView = (name: string) => {
 const { drawer } = storeToRefs(useLayoutStore())
 const theme = useTheme();
 const menu = [
-  { title: "Panel", icon: "solar:home-angle-2-line-duotone", name: 'DasboardPanelView' },
+  { title: "Panel", icon: "solar:home-2-bold", name: 'DasboardPanelView' },
+  {
+    title: "Panel-Control",
+    icon: "dashicons:admin-network",
+    items: [
+      { title: "Usuarios", name: 'DasboardPanelUsuarios' },
+    ],
+  },
   {
     title: "Registros",
     icon: "solar:box-line-duotone",
@@ -144,7 +150,6 @@ const menuRoot = [
     icon: "dashicons:admin-network",
     items: [
       { title: "PANEL", name: 'DasboardRootPanel' },
-      { title: "COMPAÑIAS", name: 'DasboardRootCompany' },
       { title: "PLANES", name: 'DasboardRootPlanes' },
     ],
   },

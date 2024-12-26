@@ -1,5 +1,12 @@
 <template>
   <v-card>
+
+    <template #text>
+      <v-text-field placeholder="Buscador" v-model="search" label="Buscar" prepend-inner-icon="mdi-magnify"
+        variant="outlined" hide-details single-line>
+      </v-text-field>
+    </template>
+
     <v-data-table hover density="compact" :search="search" :row-props="props.rowProps" :loading="table_loading"
       :headers="table_headers" :items="table_items" :show-expand="showExpand" :expand-on-click="showExpand"
       fixed-header>
@@ -22,6 +29,8 @@
         <tr>
           <td class="text-primary" :colspan="columns.length">
             {{ item.description ? item.description : null }}
+
+
           </td>
         </tr>
       </template>

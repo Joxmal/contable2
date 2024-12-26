@@ -36,7 +36,7 @@
         </VBtn>
       </VAppBar>
       <VMain>
-        <v-container>
+        <v-container fluid>
           <slot />
         </v-container>
       </VMain>

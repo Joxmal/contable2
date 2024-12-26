@@ -24,8 +24,8 @@ export interface GetDataLibroDiario {
   fecha: Date
   cuentaId: number
   descripcion: string
-  debe: number
-  haber: number
+  debe: string
+  haber: string
   companyId: number
   createdAt: Date
   updatedAt: Date

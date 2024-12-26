@@ -43,8 +43,8 @@
         <tr :class="props.totalItemsSuma.isValid ? 'bg-blue-grey-lighten-3' : 'bg-red-lighten-4'"
           class="text-left  font-weight-bold">
           <td colspan="3" class="border-e-md text-center ">TOTAL</td>
-          <td class="border-e-md">{{ props.totalItemsSuma.debe }}</td>
-          <td class="border-e-md">{{ props.totalItemsSuma.haber }}</td>
+          <td class="border-e-md">{{ financialFixed(props.totalItemsSuma.debe) }}</td>
+          <td class="border-e-md">{{ financialFixed(props.totalItemsSuma.haber) }}</td>
           <td></td>
           <td></td>
         </tr>
@@ -57,6 +57,7 @@
 
 <script setup lang="ts">
 import type { ReadonlyHeaders, ReadonlyItems, ReadonlyRowProps } from '@/interface/vuetify/dataTable';
+import { financialFixed } from '@/utils/fechas/financialFixed';
 import { formatDateString } from '@/utils/fechas/formatDateString';
 import type { TotalItemsSuma } from '@/views/admin/dashboard/reportes/LibroDiarioView.vue';
 import { ref } from 'vue';
@@ -116,10 +117,12 @@ const headers: ReadonlyHeaders = [
   {
     key: 'debe',
     title: 'Debe',
+    value: ({ debe }) => financialFixed(debe)
   },
   {
     key: 'haber',
     title: 'Haber',
+    value: ({ haber }) => financialFixed(haber)
   },
   {
     key: 'actions',
