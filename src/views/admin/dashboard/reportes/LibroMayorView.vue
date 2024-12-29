@@ -1,10 +1,5 @@
 <template>
-
-
-
   <v-card class="d-flex  bg-surface-variant flex-wrap">
-
-
     <div class="ma-2 pa-2 me-auto">
       <v-tooltip text="Calcular usando el Sando Anterior del ultimo periodo">
         <template v-slot:activator="{ props }">

@@ -33,13 +33,13 @@ export interface AuthUser {
   first_name: string
   second_name: string
   companyId: number
-  roleId: null
+  roleId: number
   primaryRole: string
   last_login: null
   createdAt: Date
   updatedAt: Date
   is_active: boolean
-  role: null | RoleAuthUser
+  role: RoleAuthUser
 }
 
 export interface RoleAuthUser {

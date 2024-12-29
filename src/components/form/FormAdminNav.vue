@@ -123,6 +123,7 @@ const menu = [
     icon: "dashicons:admin-network",
     items: [
       { title: "Usuarios", name: 'DasboardPanelUsuarios' },
+      { title: "Roles", name: 'DasboardPanelRoles' },
     ],
   },
   {
@@ -138,6 +139,8 @@ const menu = [
     items: [
       { title: "Libro Diario", name: 'DasboardReportesLibroDiario' },
       { title: "Libro Mayor", name: 'DasboardReportesLibroMayor' },
+      { title: "Balance Comprobación", name: 'DasboardReportesBalanceComprobacion' },
+      { title: "Balance General", name: 'DasboardReportesBalanceGeneral' },
     ],
   },
 

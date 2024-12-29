@@ -7,3 +7,26 @@
 .daTableBorder table td+td {
   border-left: 1px solid #dddddd;
 }
+
+.bordered-table {
+  border-collapse: collapse;
+  /* Asegura que los bordes se colapsen */
+}
+
+.bordered-cell {
+  border: 1px solid rgba(var(--v-theme-surface-variant));
+  /* Color y estilo del borde */
+  padding: 8px;
+  /* Espaciado interno */
+}
+
+.table-full-bordered-cell div table td {
+  border: 1px solid rgba(var(--v-theme-surface-variant));
+}
+
+.table-full-bordered-cell div table td:nth-child(2) {
+  border-left: none;
+} 
+.table-full-bordered-cell div table td:nth-child(3) {
+  border-left: none;
+} 

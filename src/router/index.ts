@@ -34,9 +34,14 @@ const router = createRouter({
           component: () => import('../views/admin/dashboard/panel-control/RouterView.vue'),
           children: [
             {
-              path: 'canelControlUsuarios',
+              path: 'panelControlUsuarios',
               name: 'DasboardPanelUsuarios',
               component: () => import('../views/admin/dashboard/panel-control/UsuariosView.vue'),
+            },
+            {
+              path: 'panelControlRoles',
+              name: 'DasboardPanelRoles',
+              component: () => import('../views/admin/dashboard/panel-control/RolesView.vue'),
             },
           ],
         },
@@ -69,6 +74,17 @@ const router = createRouter({
               path: 'libroMayor',
               name: 'DasboardReportesLibroMayor',
               component: () => import('../views/admin/dashboard/reportes/LibroMayorView.vue'),
+            },
+            {
+              path: 'balance-comprobacion',
+              name: 'DasboardReportesBalanceComprobacion',
+              component: () =>
+                import('../views/admin/dashboard/reportes/BalanceComprobacionView.vue'),
+            },
+            {
+              path: 'balance-general',
+              name: 'DasboardReportesBalanceGeneral',
+              component: () => import('../views/admin/dashboard/reportes/BalanceGeneralView.vue'),
             },
           ],
         },

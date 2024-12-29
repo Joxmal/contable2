@@ -31,7 +31,7 @@ const emit = defineEmits<{
 }>()
 
 export interface DateInput {
-  raw: undefined | string[],
+  raw?: undefined | string[],
   desde: undefined | string,
   hasta: undefined | string
 }

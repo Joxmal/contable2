@@ -1,34 +1,31 @@
 <template>
-  <h2>PANEL</h2>
-  <TableDataUsuarios :table-items="dataUsersDB" />
+  <h2 class="text-center">PANEL DE USUARIOS</h2>
+  <TableDataUsuarios @alterUser="alternarUsuario" :table-items="store.dataUsersDB" />
 
 </template>
 
 <script setup lang="ts">
 import TableDataUsuarios from '@/components/TableData/TableDataUsuarios.vue';
-import AxiosService from '@/services/userServices'
-import type { GetONECompanyUser, AuthUser } from '@/interface/company/GetId.interface';
-import { ref } from 'vue';
+import { watch } from 'vue';
 import { onMounted } from 'vue';
+import { useUsersPanelControlStore } from '@/stores/panelControl/users';
+import { storeToRefs } from 'pinia';
+
+const store = useUsersPanelControlStore()
+const { reload } = storeToRefs(store)
 
 onMounted(() => {
-  companyDataDB()
-
+  store.usersDataDB()
 })
 
+watch(reload, () => {
+  store.usersDataDB()
+})
 
-const dataUsersDB = ref<AuthUser[]>([])
-
-
-//Obtener datos de los usuarios
-async function companyDataDB() {
-  try {
-    const { data } = await AxiosService.get<GetONECompanyUser>('/company/SUPERADMIN')
-    dataUsersDB.value = data.auth_users
-    console.log(data)
-  } catch (error) {
-    console.error(error)
-    throw new Error()
-  }
+async function alternarUsuario(id: number) {
+  await store.AlterUsersDataDB(id)
+  store.reload++
 }
+
+
 </script>
