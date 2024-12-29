@@ -6,7 +6,7 @@
     </VBtn>
   </div>
 
-  <v-card width="850" class="mx-auto">
+  <v-card class="mx-auto">
 
     <v-table class="table-full-bordered-cell" v-if="store.findAllBalanceGeneral" density="compact">
       <caption class="font-weight-bold bordered-cell bg-blue-grey-lighten-3">Balance General</caption>
@@ -51,6 +51,20 @@
           <td colspan="2">Total Patrimonio</td>
           <td align="right" class="">{{
             financialFixed(store.findAllBalanceGeneral.totales.pasivo_patrimonio.capitalSocial) }}</td>
+        </tr>
+        <!-- Pasivo -->
+        <tr>
+          <td colspan="3" class="text-center font-weight-bold">Pasivo</td>
+        </tr>
+        <tr v-for="(item, index) in store.findAllBalanceGeneral.pasivos" :key="`activo-${index}`">
+          <td>{{ item.cuentaName }}</td>
+          <td align="center">{{ financialFixed(item.totalNeto) }}</td>
+          <td></td>
+        </tr>
+        <tr class="bordered-cell bg-blue-grey-lighten-5 font-weight-bold">
+          <td colspan="2">Total Pasivo</td>
+          <td align="right" class="">{{
+            financialFixed(store.findAllBalanceGeneral.totales.pasivo_patrimonio.pasivo) }}</td>
         </tr>
         <!-- Estado de Resultados-->
         <tr>
